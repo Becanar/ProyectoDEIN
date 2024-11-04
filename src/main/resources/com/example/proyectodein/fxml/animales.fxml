@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyectodein.controladores.animalesControler">
+   <children>
+      <MenuBar fx:id="barraMenu" maxWidth="1.7976931348623157E308">
+         <menus>
+            <Menu fx:id="menuAnimales" mnemonicParsing="false" text="Animales">
+               <items>
+                  <MenuItem fx:id="aniadirAnimal" mnemonicParsing="false" onAction="#aniadirAnimal" text="Añadir…" />
+                  <MenuItem fx:id="editarAnimal" disable="true" mnemonicParsing="false" onAction="#editarAnimal" text="Editar…" />
+                  <MenuItem fx:id="borrarAnimal" disable="true" mnemonicParsing="false" onAction="#borrarAnimal" text="Borrar" />
+                  <MenuItem fx:id="infoAnimal" disable="true" mnemonicParsing="false" onAction="#infoAnimal" text="Mostrar información" />
+               </items>
+            </Menu>
+            <Menu fx:id="menuAyuda" mnemonicParsing="false" text="Ayuda" />
+         </menus>
+      </MenuBar>
+      <FlowPane fx:id="panelListado" alignment="CENTER" prefWidth="200.0">
+         <children>
+            <Label fx:id="lblListado" text="LISTADO DE ANIMALES" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" top="20.0" />
+         </VBox.margin>
+      </FlowPane>
+      <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="222.0">
+         <children>
+            <Label fx:id="lblNombre" text="Nombre:">
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="txtNombre">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="20.0" />
+         </VBox.margin>
+      </HBox>
+      <TableView fx:id="tablaVista">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </TableView>
+   </children>
+</VBox>
