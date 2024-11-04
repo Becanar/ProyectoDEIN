@@ -18,11 +18,11 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/example/proyectodein/fxml/login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/example/proyectodein/fxml/animales.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
         try {
-            Image img = new Image(getClass().getResource("/com/example/proyectodein/images/veet.jpg").toString());
+            Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
             stage.getIcons().add(img);
         } catch (Exception e) {
             System.out.println("Error al cargar la imagen: " + e.getMessage());

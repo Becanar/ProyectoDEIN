@@ -88,7 +88,7 @@ public class animalesControler implements Initializable {
             Stage stage = new Stage();
             stage.setScene(scene);
             try {
-                Image img = new Image(getClass().getResource("/com/example/proyectodein/images/veet.jpg").toString());
+                Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
                 stage.getIcons().add(img);
             } catch (Exception e) {
                 System.out.println("Error al cargar la imagen: " + e.getMessage());
@@ -228,7 +228,7 @@ public class animalesControler implements Initializable {
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 try {
-                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/veet.jpg").toString());
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
                     stage.getIcons().add(img);
                 } catch (Exception e) {
                     System.out.println("Error al cargar la imagen: " + e.getMessage());
