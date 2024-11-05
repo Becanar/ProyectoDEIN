@@ -1,6 +1,5 @@
 package com.example.proyectodein.controladores;
 
-import com.example.proyectodein.dao.animalDao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

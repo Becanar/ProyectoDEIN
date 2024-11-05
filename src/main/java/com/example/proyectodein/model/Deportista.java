@@ -7,12 +7,12 @@ import java.util.Objects;
 public class Deportista {
     private int idDeportista;
     private String nombre;
-    private String sexo;
+    private char sexo;
     private int peso;
     private int altura;
     private Blob foto;
 
-    public Deportista(int idDeportista, String nombre, String sexo, int peso, int altura, Blob foto) {
+    public Deportista(int idDeportista, String nombre, char sexo, int peso, int altura, Blob foto) {
         this.idDeportista = idDeportista;
         this.nombre = nombre;
         this.sexo = sexo;
@@ -37,11 +37,11 @@ public class Deportista {
         this.nombre = nombre;
     }
 
-    public String getSexo() {
+    public char getSexo() {
         return sexo;
     }
 
-    public void setSexo(String sexo) {
+    public void setSexo(char sexo) {
         this.sexo = sexo;
     }
 

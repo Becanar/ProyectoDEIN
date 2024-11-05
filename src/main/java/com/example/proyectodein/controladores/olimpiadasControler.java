@@ -1,6 +1,5 @@
 package com.example.proyectodein.controladores;
 
-import com.example.proyectodein.dao.animalDao;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
