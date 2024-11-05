@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class animalesControler implements Initializable {
+public class olimpiadasControler implements Initializable {
 
     @FXML
     private MenuItem aniadirAnimal;

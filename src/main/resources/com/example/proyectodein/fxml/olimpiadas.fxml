@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyectodein.controladores.animalesControler">
+<VBox fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyectodein.controladores.olimpiadasControler">
    <children>
       <MenuBar fx:id="barraMenu" maxWidth="1.7976931348623157E308">
          <menus>
@@ -23,11 +23,11 @@
                <items>
                   <Menu fx:id="menuIdioma" mnemonicParsing="false" text="Cambiar Idioma">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
                         <MenuItem fx:id="menuEn" mnemonicParsing="false" text="Inglés" />
+                        <MenuItem fx:id="menuEs" mnemonicParsing="false" text="Español" />
+                        <MenuItem fx:id="menuEus" mnemonicParsing="false" text="Euskera" />
                     </items>
                   </Menu>
-                  <MenuItem fx:id="menuEs" mnemonicParsing="false" text="Español" />
                </items></Menu>
          </menus>
       </MenuBar>

@@ -18,7 +18,7 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/example/proyectodein/fxml/animales.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/example/proyectodein/fxml/olimpiadas.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);
         try {
@@ -28,7 +28,7 @@ public class App extends Application {
             System.out.println("Error al cargar la imagen: " + e.getMessage());
         }
         scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-        stage.setTitle("VETERINARIA-LOGIN");
+        stage.setTitle("GESTOR-OLIMPIADAS");
         stage.setScene(scene);
         stage.show();
     }
