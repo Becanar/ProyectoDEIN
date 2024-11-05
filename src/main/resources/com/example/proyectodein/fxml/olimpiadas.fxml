@@ -23,9 +23,9 @@
                <items>
                   <Menu fx:id="menuIdioma" mnemonicParsing="false" text="Cambiar Idioma">
                     <items>
-                        <MenuItem fx:id="menuEn" mnemonicParsing="false" text="Inglés" />
-                        <MenuItem fx:id="menuEs" mnemonicParsing="false" text="Español" />
-                        <MenuItem fx:id="menuEus" mnemonicParsing="false" text="Euskera" />
+                        <MenuItem fx:id="menuEn" mnemonicParsing="false" onAction="#cambiarIngles" text="Inglés" />
+                        <MenuItem fx:id="menuEs" mnemonicParsing="false" onAction="#cambiarEsp" text="Español" />
+                        <MenuItem fx:id="menuEus" mnemonicParsing="false" onAction="#cambiarEus" text="Euskera" />
                     </items>
                   </Menu>
                </items></Menu>
@@ -67,7 +67,7 @@
             </TextField>
             <HBox fx:id="panelHueco" prefHeight="100.0" prefWidth="200.0" />
             <Label fx:id="lblCombo" prefHeight="16.0" prefWidth="153.0" text="Elige qué gestionar:" />
-            <ComboBox prefWidth="150.0" />
+            <ComboBox fx:id="comboBoxDatos" prefWidth="150.0" />
          </children>
          <VBox.margin>
             <Insets bottom="10.0" left="20.0" />
