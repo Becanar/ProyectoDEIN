@@ -8,6 +8,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -29,13 +31,23 @@
                </items></Menu>
          </menus>
       </MenuBar>
-      <FlowPane fx:id="panelListado" alignment="CENTER" prefWidth="200.0">
+      <FlowPane fx:id="panelListado" alignment="CENTER" prefHeight="62.0" prefWidth="1000.0">
          <children>
+            <ImageView fx:id="imgOlI" fitHeight="44.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/ol.png" />
+               </image>
+            </ImageView>
             <Label fx:id="lblGestion" text="GESTIÓN DE OLIMPIADAS" textAlignment="CENTER">
                <font>
-                  <Font size="24.0" />
+                  <Font size="39.0" />
                </font>
             </Label>
+            <ImageView fx:id="imgOlD" fitHeight="44.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/ol.png" />
+               </image>
+            </ImageView>
          </children>
          <VBox.margin>
             <Insets bottom="20.0" top="20.0" />
@@ -43,11 +55,11 @@
       </FlowPane>
       <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="222.0">
          <children>
-            <Label fx:id="lblNombre" text="Nombre:">
-               <HBox.margin>
-                  <Insets right="5.0" />
-               </HBox.margin>
-            </Label>
+            <ImageView fx:id="imgOlI1" fitHeight="39.0" fitWidth="148.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/lupa.png" />
+               </image>
+            </ImageView>
             <TextField fx:id="txtNombre">
                <HBox.margin>
                   <Insets left="5.0" />
