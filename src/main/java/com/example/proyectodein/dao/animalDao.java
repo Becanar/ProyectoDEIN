@@ -1,7 +1,6 @@
 package com.example.proyectodein.dao;
 
 import com.example.proyectodein.db.ConectorDB;
-import com.example.proyectodein.model.Animal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
