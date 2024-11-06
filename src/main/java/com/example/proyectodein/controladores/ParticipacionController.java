@@ -1,6 +1,5 @@
 package com.example.proyectodein.controladores;
 
-
 import com.example.proyectodein.dao.DaoDeportista;
 import com.example.proyectodein.dao.DaoEquipo;
 import com.example.proyectodein.dao.DaoEvento;
@@ -55,16 +54,18 @@ public class ParticipacionController implements Initializable {
         this.resources = resourceBundle;
         cargarListas();
         if (this.participacion != null) {
-            lstDeportista.getSelectionModel().select(participacion.getIdDeportista());
-            lstDeportista.setDisable(true);
-            lstEvento.getSelectionModel().select(participacion.getIdEvento());
-            lstEvento.setDisable(true);
+            lstDeportista.getSelectionModel().select(participacion.getIdDeportista());// Deshabilitar si no es necesario editar
+            lstEvento.getSelectionModel().select(participacion.getIdEvento());// Deshabilitar si no es necesario editar
             lstEquipo.getSelectionModel().select(participacion.getIdEquipo());
-            txtEdad.setText(participacion.getEdad() + "");
+            txtEdad.setText(String.valueOf(participacion.getEdad()));
             txtMedalla.setText(participacion.getMedalla());
+        } else {
+            // Habilitar los campos si estamos creando una nueva participación
+            lstDeportista.setDisable(false);
+            lstEvento.setDisable(false);
+            lstEquipo.setDisable(false);
         }
     }
-
 
     public void cargarListas() {
         ObservableList<Deportista> deportistas = DaoDeportista.cargarListado();
@@ -77,7 +78,7 @@ public class ParticipacionController implements Initializable {
 
     @FXML
     void cancelar(ActionEvent event) {
-        Stage stage = (Stage)txtEdad.getScene().getWindow();
+        Stage stage = (Stage) txtEdad.getScene().getWindow();
         stage.close();
     }
 
@@ -90,27 +91,31 @@ public class ParticipacionController implements Initializable {
             Participacion nuevo = new Participacion();
             nuevo.setIdDeportista(lstDeportista.getSelectionModel().getSelectedItem().getIdDeportista());
             nuevo.setIdEvento(lstEvento.getSelectionModel().getSelectedItem().getIdEvento());
-            if(DaoParticipacion.getParticipacion(nuevo.getIdDeportista(),nuevo.getIdEvento())==null){
-            nuevo.setIdEquipo(lstEquipo.getSelectionModel().getSelectedItem().getIdEquipo());
-            nuevo.setEdad(Integer.parseInt(txtEdad.getText()));
-            nuevo.setMedalla(txtMedalla.getText());
-            if (this.participacion == null) {
-                if (DaoParticipacion.insertar(nuevo)) {
-                    confirmacion(resources.getString("save.participation"));
-                    Stage stage = (Stage)txtEdad.getScene().getWindow();
-                    stage.close();
+            if(DaoParticipacion.getParticipacion(nuevo.getIdDeportista(),nuevo.getIdEvento()) == null){
+                nuevo.setIdEquipo(lstEquipo.getSelectionModel().getSelectedItem().getIdEquipo());
+                nuevo.setEdad(Integer.parseInt(txtEdad.getText()));
+                nuevo.setMedalla(txtMedalla.getText());
+
+                if (this.participacion == null) {
+                    // Crear nueva participación
+                    if (DaoParticipacion.insertar(nuevo)) {
+                        confirmacion(resources.getString("save.participation"));
+                        Stage stage = (Stage) txtEdad.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        alerta(resources.getString("save.fail"));
+                    }
                 } else {
-                    alerta(resources.getString("save.fail"));
+                    // Editar participación existente
+                    if (DaoParticipacion.modificar(participacion, nuevo)) {
+                        confirmacion(resources.getString("update.participation"));
+                        Stage stage = (Stage) txtEdad.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        alerta(resources.getString("save.fail"));
+                    }
                 }
             } else {
-                if (DaoParticipacion.modificar(participacion, nuevo)) {
-                    confirmacion(resources.getString("update.participation"));
-                    Stage stage = (Stage)txtEdad.getScene().getWindow();
-                    stage.close();
-                } else {
-                    alerta(resources.getString("save.fail"));
-                }
-            }}else {
                 alerta(resources.getString("save.fail"));
             }
         }
@@ -161,5 +166,4 @@ public class ParticipacionController implements Initializable {
         alerta.setContentText(texto);
         alerta.showAndWait();
     }
-
 }

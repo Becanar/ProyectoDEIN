@@ -39,7 +39,7 @@ public class DaoDeporte {
         Deporte deporte = null;
         try {
             connection = new ConectorDB();
-            String consulta = "SELECT nombre FROM Deporte WHERE nombre = ?";
+            String consulta = "SELECT id_deporte,nombre FROM Deporte WHERE nombre = ?";
             PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
             pstmt.setString(1, str);
             ResultSet rs = pstmt.executeQuery();

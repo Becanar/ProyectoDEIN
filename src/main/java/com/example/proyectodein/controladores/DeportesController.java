@@ -92,6 +92,7 @@ public class DeportesController implements Initializable {
             // Crear un nuevo objeto deporte con los datos del formulario
             Deporte nuevo = new Deporte();
             nuevo.setNombre(txtNombre.getText());
+            System.out.println(DaoDeporte.getDeporte(nuevo.getNombre()));
             if(DaoDeporte.getDeporte(nuevo.getNombre())==null){
             if (this.deporte == null) {
                 // Si no estamos editando un deporte, lo creamos

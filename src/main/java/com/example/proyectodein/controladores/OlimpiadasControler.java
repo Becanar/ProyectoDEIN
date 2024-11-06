@@ -65,11 +65,6 @@ public class OlimpiadasControler {
         contextMenu.getItems().addAll(editItem, deleteItem);
 
         tablaVista.setContextMenu(contextMenu);
-        tablaVista.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                infoR(null);
-            }
-        });
         rootPane.setOnKeyPressed(event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.F) {
                 txtNombre.requestFocus();
@@ -206,7 +201,205 @@ public class OlimpiadasControler {
 
 
     private void editar(Object o) {
+        // Obtener el objeto seleccionado desde la tabla
+        Object seleccion = tablaVista.getSelectionModel().getSelectedItem();
+
+        if (seleccion != null) {
+            String item = comboBoxDatos.getSelectionModel().getSelectedItem();
+
+            if (item.equals("Olimpiadas")) {
+                // Olimpiada
+                Olimpiada olimpiada = (Olimpiada) seleccion;
+                try {
+                    Window ventana = tablaVista.getScene().getWindow();
+                    String idioma = Propiedades.getValor("language");
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/olimpiadasV.fxml"), bundle);
+                    OlimpiadasVController controlador = new OlimpiadasVController(olimpiada);  // Pasamos la Olimpiada seleccionada
+                    fxmlLoader.setController(controlador);
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    try {
+                        Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                        stage.getIcons().add(img);
+                    } catch (Exception e) {
+                        System.out.println("error.img " + e.getMessage());
+                    }
+                    scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.olympics") + " - " + resources.getString("app.name"));
+                    stage.initOwner(ventana);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    cargarOlimpiadas();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    alerta(resources.getString("message.window_open"));
+                }
+
+            } else if (item.equals("Deportistas")) {
+                // Deportista
+                Deportista deportista = (Deportista) seleccion;
+                try {
+                    Window ventana = tablaVista.getScene().getWindow();
+                    String idioma = Propiedades.getValor("language");
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportista.fxml"), bundle);
+                    DeportistaController controlador = new DeportistaController(deportista);  // Pasamos el Deportista seleccionado
+                    fxmlLoader.setController(controlador);
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    try {
+                        Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                        stage.getIcons().add(img);
+                    } catch (Exception e) {
+                        System.out.println("error.img " + e.getMessage());
+                    }
+                    scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.athlete") + " - " + resources.getString("app.name"));
+                    stage.initOwner(ventana);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    cargarDeportistas();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    alerta(resources.getString("message.window_open"));
+                }
+
+            } else if (item.equals("Equipos")) {
+                // Equipo
+                Equipo equipo = (Equipo) seleccion;
+                try {
+                    Window ventana = tablaVista.getScene().getWindow();
+                    String idioma = Propiedades.getValor("language");
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/equipo.fxml"), bundle);
+                    EquiposController controlador = new EquiposController(equipo);  // Pasamos el Equipo seleccionado
+                    fxmlLoader.setController(controlador);
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    try {
+                        Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                        stage.getIcons().add(img);
+                    } catch (Exception e) {
+                        System.out.println("error.img " + e.getMessage());
+                    }
+                    scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.teams") + " - " + resources.getString("app.name"));
+                    stage.initOwner(ventana);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    cargarEquipos();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    alerta(resources.getString("message.window_open"));
+                }
+
+            } else if (item.equals("Eventos")) {
+                // Evento
+                Evento evento = (Evento) seleccion;
+                try {
+                    Window ventana = tablaVista.getScene().getWindow();
+                    String idioma = Propiedades.getValor("language");
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/evento.fxml"), bundle);
+                    EventoController controlador = new EventoController(evento);  // Pasamos el Evento seleccionado
+                    fxmlLoader.setController(controlador);
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    try {
+                        Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                        stage.getIcons().add(img);
+                    } catch (Exception e) {
+                        System.out.println("error.img " + e.getMessage());
+                    }
+                    scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.event") + " - " + resources.getString("app.name"));
+                    stage.initOwner(ventana);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    cargarEventos();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    alerta(resources.getString("message.window_open"));
+                }
+
+            } else if (item.equals("Deportes")) {
+                // Deporte
+                Deporte deporte = (Deporte) seleccion;
+                try {
+                    Window ventana = tablaVista.getScene().getWindow();
+                    String idioma = Propiedades.getValor("language");
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportes.fxml"), bundle);
+                    DeportesController controlador = new DeportesController(deporte);  // Pasamos el Deporte seleccionado
+                    fxmlLoader.setController(controlador);
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    try {
+                        Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                        stage.getIcons().add(img);
+                    } catch (Exception e) {
+                        System.out.println("error.img " + e.getMessage());
+                    }
+                    scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.sports") + " - " + resources.getString("app.name"));
+                    stage.initOwner(ventana);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    cargarDeportes();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    alerta(resources.getString("message.window_open"));
+                }
+
+            } else if (item.equals("Participaciones")) {
+                // Participación
+                Participacion participacion = (Participacion) seleccion;
+                try {
+                    Window ventana = tablaVista.getScene().getWindow();
+                    String idioma = Propiedades.getValor("language");
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/participacion.fxml"), bundle);
+                    ParticipacionController controlador = new ParticipacionController(participacion);  // Pasamos la Participación seleccionada
+                    fxmlLoader.setController(controlador);
+                    Scene scene = new Scene(fxmlLoader.load());
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    try {
+                        Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                        stage.getIcons().add(img);
+                    } catch (Exception e) {
+                        System.out.println("error.img " + e.getMessage());
+                    }
+                    scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.participation") + " - " + resources.getString("app.name"));
+                    stage.initOwner(ventana);
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.showAndWait();
+                    cargarParticipaciones();
+                } catch (IOException e) {
+                    System.err.println(e.getMessage());
+                    alerta(resources.getString("message.window_open"));
+                }
+
+            }
+        } else {
+            alerta("Por favor, selecciona un elemento para editar.");
+        }
     }
+
+
 
     private void cargarDatosComboBox() {
         ObservableList<String> opciones = FXCollections.observableArrayList(
