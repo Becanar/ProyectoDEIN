@@ -41,6 +41,35 @@ public class DaoDeportista {
         return deportista;
     }
 
+    public static Deportista getDeportista(String str,char sx) {
+        ConectorDB connection;
+        Deportista deportista = null;
+        try {
+            connection = new ConectorDB();
+            String consulta = "SELECT id_deportista,nombre,sexo,peso,altura,foto FROM Deportista WHERE nombre = ? AND sexo=?";
+            PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
+            pstmt.setString(1, str);
+            pstmt.setString(2, ""+sx);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id_deportista = rs.getInt("id_deportista");
+                String nombre = rs.getString("nombre");
+                char sexo = rs.getString("sexo").charAt(0);
+                int peso = rs.getInt("peso");
+                int altura = rs.getInt("altura");
+                Blob foto = rs.getBlob("foto");
+                deportista = new Deportista(id_deportista,nombre,sexo,peso,altura,foto);
+            }
+            rs.close();
+            connection.closeConexion();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return deportista;
+    }
+
 
     public static Blob convertFileToBlob(File file) throws SQLException, IOException {
         ConectorDB connection = new ConectorDB();

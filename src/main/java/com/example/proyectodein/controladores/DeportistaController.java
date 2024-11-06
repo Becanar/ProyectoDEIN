@@ -116,6 +116,7 @@ public class DeportistaController implements Initializable {
             } else {
                 nuevo.setSexo('M');
             }
+            if(DaoDeportista.getDeportista(nuevo.getNombre(),nuevo.getSexo())==null){
             nuevo.setPeso(Integer.parseInt(txtPeso.getText()));
             nuevo.setAltura(Integer.parseInt(txtAltura.getText()));
             nuevo.setFoto(this.imagen);
@@ -136,6 +137,8 @@ public class DeportistaController implements Initializable {
                 } else {
                     alerta(resources.getString("save.fail"));
                 }
+            }}else {
+                alerta(resources.getString("save.fail"));
             }
         }
     }

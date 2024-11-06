@@ -37,6 +37,32 @@ public class DaoEquipo {
         return equipo;
     }
 
+    public static Equipo getEquipo(String str,String str2) {
+        ConectorDB connection;
+        Equipo equipo = null;
+        try {
+            connection = new ConectorDB();
+            String consulta = "SELECT id_equipo,nombre,iniciales FROM Equipo WHERE nombre = ? AND iniciales = ?";
+            PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
+            pstmt.setString(1, str);
+            pstmt.setString(2, str2);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id_equipo = rs.getInt("id_equipo");
+                String nombre = rs.getString("nombre");
+                String iniciales = rs.getString("iniciales");
+                equipo = new Equipo(id_equipo,nombre,iniciales);
+            }
+            rs.close();
+            connection.closeConexion();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return equipo;
+    }
+
     public static ObservableList<Equipo> cargarListado() {
         ConectorDB connection;
         ObservableList<Equipo> equipos = FXCollections.observableArrayList();

@@ -39,6 +39,33 @@ public class DaoOlimpiada {
         return olimpiada;
     }
 
+    public static Olimpiada getOlimpiada(String str) {
+        ConectorDB connection;
+        Olimpiada olimpiada = null;
+        try {
+            connection = new ConectorDB();
+            String consulta = "SELECT id_olimpiada,nombre,anio,temporada,ciudad FROM Olimpiada WHERE nombre = ?";
+            PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
+            pstmt.setString(1, str);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id_olimpiada = rs.getInt("id_olimpiada");
+                String nombre = rs.getString("nombre");
+                int anio = rs.getInt("anio");
+                String temporada = rs.getString("temporada");
+                String ciudad = rs.getString("ciudad");
+                olimpiada = new Olimpiada(id_olimpiada,nombre,anio,temporada,ciudad);
+            }
+            rs.close();
+            connection.closeConexion();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return olimpiada;
+    }
+
     public static ObservableList<Olimpiada> cargarListado() {
         ConectorDB connection;
         ObservableList<Olimpiada> olimpiadas = FXCollections.observableArrayList();

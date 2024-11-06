@@ -1,10 +1,7 @@
 package com.example.proyectodein.controladores;
 
-
 import com.example.proyectodein.dao.DaoOlimpiada;
 import com.example.proyectodein.model.Olimpiada;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,96 +13,75 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class OlimpiadasVController implements Initializable {
-    private Olimpiada olimpiada;
-    private Olimpiada crear;
 
-    @FXML // fx:id="btnEliminar"
-    private Button btnEliminar; // Value injected by FXMLLoader
+    private Olimpiada olimpiada; // La olimpiada que estamos editando o creando
 
-    @FXML // fx:id="cbOlimpiada"
-    private ComboBox<Olimpiada> cbOlimpiada; // Value injected by FXMLLoader
-
-    @FXML // fx:id="rbInvierno"
-    private RadioButton rbInvierno; // Value injected by FXMLLoader
-
-    @FXML // fx:id="rbVerano"
-    private RadioButton rbVerano; // Value injected by FXMLLoader
-
-    @FXML // fx:id="tgTemporada"
-    private ToggleGroup tgTemporada; // Value injected by FXMLLoader
-
-    @FXML // fx:id="txtAnio"
-    private TextField txtAnio; // Value injected by FXMLLoader
-
-    @FXML // fx:id="txtCiudad"
-    private TextField txtCiudad; // Value injected by FXMLLoader
-
-    @FXML // fx:id="txtNombre"
-    private TextField txtNombre; // Value injected by FXMLLoader
-
-    @FXML // fx:id="lblDelete"
-    private Label lblDelete; // Value injected by FXMLLoader
-
+    // Elementos del FXML
     @FXML
-    private ResourceBundle resources; // ResourceBundle injected automatically by FXML loader
+    private Button btnEliminar;
+    @FXML
+    private RadioButton rbInvierno;
+    @FXML
+    private RadioButton rbVerano;
+    @FXML
+    private ToggleGroup tgTemporada;
+    @FXML
+    private TextField txtAnio;
+    @FXML
+    private TextField txtCiudad;
+    @FXML
+    private TextField txtNombre;
+    @FXML
+    private Label lblDelete;
 
+    private ResourceBundle resources;
+
+    // Constructor vacío para la creación de una nueva olimpiada
+    public OlimpiadasVController() {
+        this.olimpiada = null;
+    }
+
+    // Constructor para la edición de una olimpiada existente
+    public OlimpiadasVController(Olimpiada olimpiada) {
+        this.olimpiada = olimpiada;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resources = resourceBundle;
-        this.olimpiada = null;
-        crear = new Olimpiada();
-        crear.setIdOlimpiada(0);
-        crear.setNombre(resources.getString("cb.new"));
-        cargarOlimpiadas();
-        // Listener ComboBox
-        cbOlimpiada.getSelectionModel().selectedItemProperty().addListener(this::cambioOlimpiada);
-    }
 
-
-    public void cargarOlimpiadas() {
-        cbOlimpiada.getItems().clear();
-        cbOlimpiada.getItems().add(crear);
-        ObservableList<Olimpiada> olimpiadas = DaoOlimpiada.cargarListado();
-        cbOlimpiada.getItems().addAll(olimpiadas);
-        cbOlimpiada.getSelectionModel().select(0);
-    }
-
-    public void cambioOlimpiada(ObservableValue<? extends Olimpiada> observable, Olimpiada oldValue, Olimpiada newValue) {
-        if (newValue != null) {
+        if (olimpiada == null) {
+            // Crear una nueva olimpiada (Campos vacíos)
+            txtNombre.setText("");
+            txtAnio.setText("");
+            txtCiudad.setText("");
+            rbInvierno.setSelected(true);
+            rbVerano.setSelected(false);
             btnEliminar.setDisable(true);
             lblDelete.setVisible(false);
-            if (newValue.equals(crear)) {
-                olimpiada = null;
-                txtNombre.setText(null);
-                txtAnio.setText(null);
+        } else {
+            // Editar una olimpiada existente (Cargar datos)
+            txtNombre.setText(olimpiada.getNombre());
+            txtAnio.setText(String.valueOf(olimpiada.getAnio()));
+            if ("Winter".equals(olimpiada.getTemporada())) {
                 rbInvierno.setSelected(true);
                 rbVerano.setSelected(false);
-                txtCiudad.setText(null);
             } else {
-                olimpiada = newValue;
-                txtNombre.setText(olimpiada.getNombre());
-                txtAnio.setText(olimpiada.getAnio() + "");
-                if (olimpiada.getTemporada().equals("Winter")) {
-                    rbInvierno.setSelected(true);
-                    rbVerano.setSelected(false);
-                } else {
-                    rbVerano.setSelected(true);
-                    rbInvierno.setSelected(false);
-                }
-                txtCiudad.setText(olimpiada.getCiudad());
-                if (DaoOlimpiada.esEliminable(olimpiada)) {
-                    btnEliminar.setDisable(false);
-                } else {
-                    lblDelete.setVisible(true);
-                }
+                rbVerano.setSelected(true);
+                rbInvierno.setSelected(false);
+            }
+            txtCiudad.setText(olimpiada.getCiudad());
+            if (DaoOlimpiada.esEliminable(olimpiada)) {
+                btnEliminar.setDisable(false);
+            } else {
+                lblDelete.setVisible(true);
             }
         }
     }
 
     @FXML
     void cancelar(ActionEvent event) {
-        Stage stage = (Stage)txtNombre.getScene().getWindow();
+        Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
@@ -120,7 +96,6 @@ public class OlimpiadasVController implements Initializable {
         if (result.get() == ButtonType.OK) {
             if (DaoOlimpiada.eliminar(olimpiada)) {
                 confirmacion(resources.getString("delete.olympics.success"));
-                cargarOlimpiadas();
             } else {
                 alerta(resources.getString("delete.olympics.fail"));
             }
@@ -135,6 +110,7 @@ public class OlimpiadasVController implements Initializable {
         } else {
             Olimpiada nuevo = new Olimpiada();
             nuevo.setNombre(txtNombre.getText());
+            if(DaoOlimpiada.getOlimpiada(nuevo.getNombre())==null){
             nuevo.setAnio(Integer.parseInt(txtAnio.getText()));
             if (rbInvierno.isSelected()) {
                 nuevo.setTemporada("Winter");
@@ -142,25 +118,29 @@ public class OlimpiadasVController implements Initializable {
                 nuevo.setTemporada("Summer");
             }
             nuevo.setCiudad(txtCiudad.getText());
+
             if (this.olimpiada == null) {
+                // Crear una nueva olimpiada
                 int id = DaoOlimpiada.insertar(nuevo);
                 if (id == -1) {
                     alerta(resources.getString("save.fail"));
                 } else {
                     confirmacion(resources.getString("save.olympics"));
-                    cargarOlimpiadas();
                     Stage stage = (Stage) txtNombre.getScene().getWindow();
                     stage.close();
                 }
             } else {
+                // Editar una olimpiada existente
                 if (DaoOlimpiada.modificar(this.olimpiada, nuevo)) {
                     confirmacion(resources.getString("update.olympics"));
-                    cargarOlimpiadas();
                     Stage stage = (Stage) txtNombre.getScene().getWindow();
                     stage.close();
                 } else {
                     alerta(resources.getString("save.fail"));
                 }
+            }}
+            else {
+                alerta(resources.getString("save.fail"));
             }
         }
     }
@@ -200,5 +180,4 @@ public class OlimpiadasVController implements Initializable {
         alerta.setContentText(texto);
         alerta.showAndWait();
     }
-
 }

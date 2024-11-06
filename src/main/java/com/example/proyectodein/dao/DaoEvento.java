@@ -42,6 +42,37 @@ public class DaoEvento {
         return evento;
     }
 
+    public static Evento getEvento(String str,int dep,int ol ) {
+        ConectorDB connection;
+        Evento evento = null;
+        try {
+            connection = new ConectorDB();
+            String consulta = "SELECT id_evento,nombre,id_olimpiada,id_deporte FROM Evento WHERE nombre = ? AND id_olimpiada=? AND id_deporte=?";
+            PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
+            pstmt.setString(1, str);
+            pstmt.setInt(2, ol);
+            pstmt.setInt(3, dep);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id_evento = rs.getInt("id_evento");
+                String nombre = rs.getString("nombre");
+                int id_olimpiada = rs.getInt("id_olimpiada");
+                Olimpiada olimpiada = DaoOlimpiada.getOlimpiada(id_olimpiada);
+                int id_deporte = rs.getInt("id_deporte");
+                Deporte deporte = DaoDeporte.getDeporte(id_deporte);
+                evento = new Evento(id_evento,nombre,olimpiada.getIdOlimpiada(),deporte.getIdDeporte());
+            }
+            rs.close();
+            connection.closeConexion();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return evento;
+    }
+
+
     public static boolean esEliminable(Evento evento) {
         ConectorDB connection;
         try {

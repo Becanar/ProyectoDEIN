@@ -15,6 +15,50 @@ import java.sql.SQLException;
 
 public class DaoParticipacion {
 
+    public static Participacion getParticipacion(int idDeportista, int idEvento) {
+        ConectorDB connection;
+        PreparedStatement pstmt;
+        ResultSet rs;
+        Participacion participacion = null;
+        try {
+            // Establecer la conexión con la base de datos
+            connection = new ConectorDB();
+            String consulta = "SELECT id_deportista, id_evento, id_equipo, edad, medalla FROM Participacion WHERE id_deportista = ? AND id_evento = ?";
+
+            pstmt = connection.getConnection().prepareStatement(consulta);
+
+            // Establecer los parámetros
+            pstmt.setInt(1, idDeportista);  // ID del deportista
+            pstmt.setInt(2, idEvento);  // ID del evento
+
+            // Ejecutar la consulta
+            rs = pstmt.executeQuery();
+
+            // Verificar si se encontró una participación
+            if (rs.next()) {
+                // Obtener los datos de la base de datos
+                int idEquipo = rs.getInt("id_equipo");
+                int edad = rs.getInt("edad");
+                String medalla = rs.getString("medalla");
+
+                // Crear un objeto Participacion con los datos obtenidos
+                participacion = new Participacion(idDeportista, idEvento, idEquipo, edad, medalla);
+            }
+
+            // Cerrar los recursos
+            rs.close();
+            pstmt.close();
+            connection.closeConexion();
+        } catch (SQLException e) {
+            System.err.println("Error al obtener participación: " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return participacion;  // Retorna la participación encontrada o null si no existe
+    }
+
+
     public static ObservableList<Participacion> cargarListado() {
         ConectorDB connection;
         ObservableList<Participacion> participacions = FXCollections.observableArrayList();

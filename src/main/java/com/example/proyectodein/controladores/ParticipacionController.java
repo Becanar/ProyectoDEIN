@@ -90,6 +90,7 @@ public class ParticipacionController implements Initializable {
             Participacion nuevo = new Participacion();
             nuevo.setIdDeportista(lstDeportista.getSelectionModel().getSelectedItem().getIdDeportista());
             nuevo.setIdEvento(lstEvento.getSelectionModel().getSelectedItem().getIdEvento());
+            if(DaoParticipacion.getParticipacion(nuevo.getIdDeportista(),nuevo.getIdEvento())==null){
             nuevo.setIdEquipo(lstEquipo.getSelectionModel().getSelectedItem().getIdEquipo());
             nuevo.setEdad(Integer.parseInt(txtEdad.getText()));
             nuevo.setMedalla(txtMedalla.getText());
@@ -109,6 +110,8 @@ public class ParticipacionController implements Initializable {
                 } else {
                     alerta(resources.getString("save.fail"));
                 }
+            }}else {
+                alerta(resources.getString("save.fail"));
             }
         }
     }

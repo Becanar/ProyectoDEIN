@@ -83,6 +83,7 @@ public class EventoController implements Initializable {
             nuevo.setNombre(txtNombre.getText());
             nuevo.setIdOlimpiada(lstOlimpiada.getSelectionModel().getSelectedItem().getIdOlimpiada());
             nuevo.setIdDeporte(lstDeporte.getSelectionModel().getSelectedItem().getIdDeporte());
+            if(DaoEvento.getEvento(nuevo.getNombre(),nuevo.getIdOlimpiada(),nuevo.getIdDeporte())==null){
             if (this.evento == null) {
                 int id = DaoEvento.insertar(nuevo);
                 if (id == -1) {
@@ -100,6 +101,8 @@ public class EventoController implements Initializable {
                 } else {
                     alerta(resources.getString("save.fail"));
                 }
+            }}else {
+                alerta(resources.getString("save.fail"));
             }
         }
     }

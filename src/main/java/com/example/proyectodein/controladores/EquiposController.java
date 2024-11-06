@@ -2,8 +2,6 @@ package com.example.proyectodein.controladores;
 
 import com.example.proyectodein.dao.DaoEquipo;
 import com.example.proyectodein.model.Equipo;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,76 +13,63 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class EquiposController implements Initializable {
-    private Equipo equipo;
-    private Equipo crear;
 
-    @FXML // fx:id="btnEliminar"
-    private Button btnEliminar; // Value injected by FXMLLoader
+    private Equipo equipo; // La variable para almacenar el equipo a editar o crear.
 
-    @FXML // fx:id="cbEquipo"
-    private ComboBox<Equipo> cbEquipo; // Value injected by FXMLLoader
-
-    @FXML // fx:id="txtIniciales"
-    private TextField txtIniciales; // Value injected by FXMLLoader
-
-    @FXML // fx:id="txtNombre"
-    private TextField txtNombre; // Value injected by FXMLLoader
-
-    @FXML // fx:id="lblDelete"
-    private Label lblDelete; // Value injected by FXMLLoader
-
+    // Elementos del FXML
     @FXML
-    private ResourceBundle resources; // ResourceBundle injected automatically by FXML loader
+    private Button btnEliminar;
+    @FXML
+    private TextField txtIniciales; // El TextField para las iniciales del equipo
+    @FXML
+    private TextField txtNombre; // El TextField para el nombre del equipo
+    @FXML
+    private Label lblDelete; // La etiqueta que indica si el equipo no es eliminable
+
+    private ResourceBundle resources;
+
+    // Constructor vacío para crear un nuevo equipo
+    public EquiposController() {
+        this.equipo = null; // No hay un equipo a editar, por lo que se creará uno nuevo.
+    }
+
+    // Constructor para editar un equipo existente
+    public EquiposController(Equipo equipo) {
+        this.equipo = equipo; // Se asigna el equipo que se va a editar.
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resources = resourceBundle;
-        this.equipo = null;
-        crear = new Equipo();
-        crear.setIdEquipo(0);
-        crear.setNombre(resources.getString("cb.new"));
-        cargarEquipos();
-        // Listener ComboBox
-        cbEquipo.getSelectionModel().selectedItemProperty().addListener(this::cambioEquipo);
-    }
 
-    public void cargarEquipos() {
-        cbEquipo.getItems().clear();
-        cbEquipo.getItems().add(crear);
-        ObservableList<Equipo> equipos = DaoEquipo.cargarListado();
-        cbEquipo.getItems().addAll(equipos);
-        cbEquipo.getSelectionModel().select(0);
-    }
-
-    public void cambioEquipo(ObservableValue<? extends Equipo> observable, Equipo oldValue, Equipo newValue) {
-        if (newValue != null) {
+        if (equipo == null) {
+            // Si no hay un equipo a editar, configuramos los campos para crear uno nuevo.
+            txtNombre.setText("");
+            txtIniciales.setText("");
             btnEliminar.setDisable(true);
             lblDelete.setVisible(false);
-            if (newValue.equals(crear)) {
-                equipo = null;
-                txtNombre.setText(null);
-                txtIniciales.setText(null);
+        } else {
+            // Si hay un equipo a editar, configuramos los campos con los datos del equipo.
+            txtNombre.setText(equipo.getNombre());
+            txtIniciales.setText(equipo.getIniciales());
+            if (DaoEquipo.esEliminable(equipo)) {
+                btnEliminar.setDisable(false);
             } else {
-                equipo = newValue;
-                txtNombre.setText(equipo.getNombre());
-                txtIniciales.setText(equipo.getIniciales());
-                if (DaoEquipo.esEliminable(equipo)) {
-                    btnEliminar.setDisable(false);
-                } else {
-                    lblDelete.setVisible(true);
-                }
+                lblDelete.setVisible(true);
             }
         }
     }
 
     @FXML
     void cancelar(ActionEvent event) {
-        Stage stage = (Stage)txtNombre.getScene().getWindow();
+        // Cerrar la ventana sin guardar cambios
+        Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
     @FXML
     void eliminar(ActionEvent event) {
+        // Mostrar una confirmación antes de eliminar el equipo
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(txtNombre.getScene().getWindow());
         alert.setHeaderText(null);
@@ -94,7 +79,6 @@ public class EquiposController implements Initializable {
         if (result.get() == ButtonType.OK) {
             if (DaoEquipo.eliminar(equipo)) {
                 confirmacion(resources.getString("delete.teams.success"));
-                cargarEquipos();
                 Stage stage = (Stage) txtNombre.getScene().getWindow();
                 stage.close();
             } else {
@@ -105,6 +89,7 @@ public class EquiposController implements Initializable {
 
     @FXML
     void guardar(ActionEvent event) {
+        // Validar los campos antes de guardar
         String error = "";
         if (txtNombre.getText().isEmpty()) {
             error = resources.getString("validate.teams.name") + "\n";
@@ -119,33 +104,38 @@ public class EquiposController implements Initializable {
         if (!error.isEmpty()) {
             alerta(error);
         } else {
+            // Crear un nuevo objeto equipo con los datos del formulario
             Equipo nuevo = new Equipo();
             nuevo.setNombre(txtNombre.getText());
             nuevo.setIniciales(txtIniciales.getText());
+            if(DaoEquipo.getEquipo(nuevo.getNombre(), nuevo.getIniciales())==null){
             if (this.equipo == null) {
+                // Si no estamos editando un equipo, lo creamos
                 int id = DaoEquipo.insertar(nuevo);
                 if (id == -1) {
                     alerta(resources.getString("save.fail"));
                 } else {
                     confirmacion(resources.getString("save.teams"));
-                    cargarEquipos();
                     Stage stage = (Stage) txtNombre.getScene().getWindow();
                     stage.close();
                 }
             } else {
+                // Si estamos editando un equipo, lo actualizamos
                 if (DaoEquipo.modificar(equipo, nuevo)) {
                     confirmacion(resources.getString("update.teams"));
-                    cargarEquipos();
                     Stage stage = (Stage) txtNombre.getScene().getWindow();
                     stage.close();
                 } else {
                     alerta(resources.getString("save.fail"));
                 }
+            }}else {
+                alerta(resources.getString("save.fail"));
             }
         }
     }
 
     public void alerta(String texto) {
+        // Mostrar un mensaje de error
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
         alerta.setTitle("Error");
@@ -154,11 +144,11 @@ public class EquiposController implements Initializable {
     }
 
     public void confirmacion(String texto) {
+        // Mostrar un mensaje de confirmación
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
         alerta.setTitle("Info");
         alerta.setContentText(texto);
         alerta.showAndWait();
     }
-
 }

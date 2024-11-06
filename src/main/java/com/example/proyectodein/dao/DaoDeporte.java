@@ -34,6 +34,28 @@ public class DaoDeporte {
         return deporte;
     }
 
+    public static Deporte getDeporte(String str) {
+        ConectorDB connection;
+        Deporte deporte = null;
+        try {
+            connection = new ConectorDB();
+            String consulta = "SELECT nombre FROM Deporte WHERE nombre = ?";
+            PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
+            pstmt.setString(1, str);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id_deporte = rs.getInt("id_deporte");
+                String nombre = rs.getString("nombre");
+                deporte = new Deporte(id_deporte,nombre);
+            }
+            rs.close();
+            connection.closeConexion();
+        } catch (SQLException | FileNotFoundException e) {
+            System.err.println(e.getMessage());
+        }
+        return deporte;
+    }
+
     public static ObservableList<Deporte> cargarListado() {
         ConectorDB connection;
         ObservableList<Deporte> deportes = FXCollections.observableArrayList();
