@@ -15,6 +15,8 @@ public class Participacion {
         this.medalla = medalla;
     }
 
+    public Participacion(){}
+
     public int getIdDeportista() {
         return idDeportista;
     }

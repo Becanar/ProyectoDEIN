@@ -12,6 +12,7 @@ public class Equipo {
         this.nombre = nombre;
         this.iniciales = iniciales;
     }
+    public Equipo(){};
 
     public int getIdEquipo() {
         return idEquipo;

@@ -15,6 +15,8 @@ public class Evento {
         this.idDeporte = idDeporte;
     }
 
+    public Evento(){}
+
     public int getIdEvento() {
         return idEvento;
     }

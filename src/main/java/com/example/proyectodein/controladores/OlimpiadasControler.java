@@ -1,5 +1,6 @@
 package com.example.proyectodein.controladores;
 
+import com.example.proyectodein.app.App;
 import com.example.proyectodein.dao.DaoDeporte;
 import com.example.proyectodein.dao.DaoDeportista;
 import com.example.proyectodein.dao.DaoEquipo;
@@ -13,12 +14,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+
+import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class OlimpiadasControler {
+    @FXML
+    private Button btAniadir;
     @FXML
     private VBox rootPane;
     @FXML
@@ -30,9 +43,12 @@ public class OlimpiadasControler {
     @FXML
     private TextField txtNombre;
 
+
     private ObservableList<Object> lstEntera = FXCollections.observableArrayList();
     private ObservableList<Object> lstFiltrada = FXCollections.observableArrayList();
 
+    @FXML
+    private ResourceBundle resources;
 
     @FXML
     private void initialize() {
@@ -217,6 +233,130 @@ public class OlimpiadasControler {
         // Lógica para cambiar idioma a euskera
     }
 
-    public void aniadir(ActionEvent event) {
+    @FXML
+    void aniadir(ActionEvent event) {
+        String seleccion = comboBoxDatos.getSelectionModel().getSelectedItem();
+
+        if (seleccion.equals("Olimpiadas")) {
+
+            try {
+                Window ventana = tablaVista.getScene().getWindow();
+                String idioma = Propiedades.getValor("language");
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/olimpiadasV.fxml"), bundle);
+                OlimpiadasVController controlador = new OlimpiadasVController();
+                fxmlLoader.setController(controlador);
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                try {
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                    stage.getIcons().add(img);
+                } catch (Exception e) {
+                    System.out.println("error.img " + e.getMessage());
+                }
+                scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.olympics") + " - " + resources.getString("app.name"));
+                stage.initOwner(ventana);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                cargarOlimpiadas();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                alerta(resources.getString("message.window_open"));
+            }
+        } else if (seleccion.equals("Deportistas")) {
+            try {
+                Window ventana = tablaVista.getScene().getWindow();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/deportista.fxml"), resources);
+                DeportistaController controlador = new DeportistaController();
+                fxmlLoader.setController(controlador);
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.athlete") + " - " + resources.getString("app.name"));
+                stage.initOwner(ventana);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                cargarDeportistas();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                alerta(resources.getString("message.window_open"));
+            }
+        } else if (seleccion.equals("Equipos")) {
+            // Agregar nuevo Equipo
+            try {
+                Window ventana = tablaVista.getScene().getWindow();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Equipo.fxml"), resources);
+                EquiposController controlador = new EquiposController();
+                fxmlLoader.setController(controlador);
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.team") + " - " + resources.getString("app.name"));
+                stage.initOwner(ventana);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                cargarEquipos();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                alerta(resources.getString("message.window_open"));
+            }
+        } else if (seleccion.equals("Eventos")) {
+            // Agregar nuevo Evento
+            try {
+                Window ventana = tablaVista.getScene().getWindow();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Evento.fxml"), resources);
+                EventoController controlador = new EventoController();
+                fxmlLoader.setController(controlador);
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.event") + " - " + resources.getString("app.name"));
+                stage.initOwner(ventana);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                cargarEventos();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                alerta(resources.getString("message.window_open"));
+            }
+        } else if (seleccion.equals("Deportes")) {
+            // Agregar nuevo Deporte
+            try {
+                Window ventana = tablaVista.getScene().getWindow();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Deporte.fxml"), resources);
+                DeportesController controlador = new DeportesController();
+                fxmlLoader.setController(controlador);
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.sport") + " - " + resources.getString("app.name"));
+                stage.initOwner(ventana);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                cargarDeportes();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                alerta(resources.getString("message.window_open"));
+            }
+        }
     }
+    public void alerta(String texto) {
+        Alert alerta = new Alert(Alert.AlertType.ERROR);
+        alerta.setHeaderText(null);
+        alerta.setTitle("Error");
+        alerta.setContentText(texto);
+        alerta.showAndWait();
+    }
+
 }

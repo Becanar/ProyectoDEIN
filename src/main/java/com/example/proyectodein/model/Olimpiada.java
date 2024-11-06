@@ -17,6 +17,9 @@ public class Olimpiada {
         this.ciudad = ciudad;
     }
 
+    public Olimpiada(){
+    }
+
     public int getIdOlimpiada() {
         return idOlimpiada;
     }

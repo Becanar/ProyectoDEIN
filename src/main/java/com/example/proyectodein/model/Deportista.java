@@ -21,6 +21,8 @@ public class Deportista {
         this.foto = foto;
     }
 
+    public Deportista(){}
+
     public int getIdDeportista() {
         return idDeportista;
     }
