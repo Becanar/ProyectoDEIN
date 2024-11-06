@@ -243,29 +243,30 @@ public class OlimpiadasControler {
         }
     }
     private void cargarParticipaciones() {
-        // Columna para el nombre del deportista
-        TableColumn<Participacion, String> colDeportista = new TableColumn<>("Deportista");
-        colDeportista.setCellValueFactory(cellData -> new SimpleStringProperty(DaoDeportista.getDeportista(cellData.getValue().getIdDeportista()).getNombre()));
+        if (tablaVista.getColumns().isEmpty()) {
+            // Columna para el nombre del deportista
+            TableColumn<Participacion, String> colDeportista = new TableColumn<>("Deportista");
+            colDeportista.setCellValueFactory(cellData -> new SimpleStringProperty(DaoDeportista.getDeportista(cellData.getValue().getIdDeportista()).getNombre()));
 
-        // Columna para el nombre del evento
-        TableColumn<Participacion, String> colEvento = new TableColumn<>("Evento");
-        colEvento.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEvento.getEvento(cellData.getValue().getIdEvento()).getNombre()));
+            // Columna para el nombre del evento
+            TableColumn<Participacion, String> colEvento = new TableColumn<>("Evento");
+            colEvento.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEvento.getEvento(cellData.getValue().getIdEvento()).getNombre()));
 
-        // Columna para la posición
-        TableColumn<Participacion, String> colPosicion = new TableColumn<>("Equipo");
-        colPosicion.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEquipo.getEquipo(cellData.getValue().getIdEquipo()).getNombre()));
+            // Columna para la posición
+            TableColumn<Participacion, String> colPosicion = new TableColumn<>("Equipo");
+            colPosicion.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEquipo.getEquipo(cellData.getValue().getIdEquipo()).getNombre()));
 
-        // Columna para la medalla (si tiene)
-        TableColumn<Participacion, String> colMedalla = new TableColumn<>("Medalla");
-        colMedalla.setCellValueFactory(cellData -> {
-            String medalla = cellData.getValue().getMedalla();
-            return new SimpleStringProperty(medalla != null ? medalla : "NA");
-        });
+            // Columna para la medalla (si tiene)
+            TableColumn<Participacion, String> colMedalla = new TableColumn<>("Medalla");
+            colMedalla.setCellValueFactory(cellData -> {
+                String medalla = cellData.getValue().getMedalla();
+                return new SimpleStringProperty(medalla != null ? medalla : "NA");
+            });
 
 
-        // Agregar todas las columnas a la tabla
-        tablaVista.getColumns().addAll(colDeportista, colEvento, colPosicion, colMedalla);
-
+            // Agregar todas las columnas a la tabla
+            tablaVista.getColumns().addAll(colDeportista, colEvento, colPosicion, colMedalla);
+        }
         // Cargar los datos de las participaciones
         lstEntera.setAll(DaoParticipacion.cargarListado());
         tablaVista.setItems(lstEntera);
@@ -273,46 +274,51 @@ public class OlimpiadasControler {
 
 
     private void cargarOlimpiadas() {
-        TableColumn<Olimpiada, String> colNombre = new TableColumn<>("Nombre");
-        colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
+        if (tablaVista.getColumns().isEmpty()) {
+            TableColumn<Olimpiada, String> colNombre = new TableColumn<>("Nombre");
+            colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
-        TableColumn<Olimpiada, Integer> colAño = new TableColumn<>("Año");
-        colAño.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getAnio()).asObject());
+            TableColumn<Olimpiada, Integer> colAño = new TableColumn<>("Año");
+            colAño.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getAnio()).asObject());
 
-        TableColumn<Olimpiada, String> colCiudad = new TableColumn<>("Ciudad");
-        colCiudad.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCiudad()));
-        tablaVista.getColumns().addAll(colNombre, colAño, colCiudad);
+            TableColumn<Olimpiada, String> colCiudad = new TableColumn<>("Ciudad");
+            colCiudad.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCiudad()));
+            tablaVista.getColumns().addAll(colNombre, colAño, colCiudad);
+        }
         lstEntera.setAll(DaoOlimpiada.cargarListado());
         tablaVista.setItems(lstEntera);
     }
 
 
     private void cargarDeportistas() {
+        if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Deportista, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
         TableColumn<Deportista, String> colSexo = new TableColumn<>("Sexo");
         colSexo.setCellValueFactory(cellData -> new SimpleStringProperty(""+cellData.getValue().getSexo()));
 
-        tablaVista.getColumns().addAll(colNombre, colSexo);
+        tablaVista.getColumns().addAll(colNombre, colSexo);}
         lstEntera.setAll(DaoDeportista.cargarListado());
         tablaVista.setItems(lstEntera);
     }
 
     private void cargarEquipos() {
+        if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Equipo, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
         TableColumn<Equipo, String> colPais = new TableColumn<>("Siglas");
         colPais.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIniciales()));
 
-        tablaVista.getColumns().addAll(colNombre, colPais);
+        tablaVista.getColumns().addAll(colNombre, colPais);}
         lstEntera.setAll(DaoEquipo.cargarListado());
         tablaVista.setItems(lstEntera);
     }
 
 
     private void cargarEventos() {
+        if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Evento, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
@@ -322,17 +328,18 @@ public class OlimpiadasControler {
         TableColumn<Evento, String> colDeporte = new TableColumn<>("Deporte");
         colDeporte.setCellValueFactory(cellData -> new SimpleStringProperty(DaoDeporte.getDeporte(cellData.getValue().getIdDeporte()).getNombre()));
 
-        tablaVista.getColumns().addAll(colNombre, colOlimpiada, colDeporte);
+        tablaVista.getColumns().addAll(colNombre, colOlimpiada, colDeporte);}
         lstEntera.setAll(DaoEvento.cargarListado());
         tablaVista.setItems(lstEntera);
     }
 
 
     private void cargarDeportes() {
+        if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Deporte, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-        tablaVista.getColumns().addAll(colNombre);
+        tablaVista.getColumns().addAll(colNombre);}
         lstEntera.setAll(DaoDeporte.cargarListado());
         tablaVista.setItems(lstEntera);
     }
