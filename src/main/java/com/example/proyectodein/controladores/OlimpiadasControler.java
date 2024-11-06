@@ -269,14 +269,22 @@ public class OlimpiadasControler {
         } else if (seleccion.equals("Deportistas")) {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/deportista.fxml"), resources);
+                String idioma = Propiedades.getValor("language");
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportista.fxml"), bundle);
                 DeportistaController controlador = new DeportistaController();
                 fxmlLoader.setController(controlador);
                 Scene scene = new Scene(fxmlLoader.load());
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.setResizable(false);
-                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
+                try {
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                    stage.getIcons().add(img);
+                } catch (Exception e) {
+                    System.out.println("error.img " + e.getMessage());
+                }
+                scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
                 stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.athlete") + " - " + resources.getString("app.name"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
@@ -290,15 +298,23 @@ public class OlimpiadasControler {
             // Agregar nuevo Equipo
             try {
                 Window ventana = tablaVista.getScene().getWindow();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Equipo.fxml"), resources);
+                String idioma = Propiedades.getValor("language");
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/equipo.fxml"), bundle);
                 EquiposController controlador = new EquiposController();
                 fxmlLoader.setController(controlador);
                 Scene scene = new Scene(fxmlLoader.load());
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.setResizable(false);
-                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.team") + " - " + resources.getString("app.name"));
+                try {
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                    stage.getIcons().add(img);
+                } catch (Exception e) {
+                    System.out.println("error.img " + e.getMessage());
+                }
+                scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.teams") + " - " + resources.getString("app.name"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
@@ -311,14 +327,22 @@ public class OlimpiadasControler {
             // Agregar nuevo Evento
             try {
                 Window ventana = tablaVista.getScene().getWindow();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Evento.fxml"), resources);
+                String idioma = Propiedades.getValor("language");
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/evento.fxml"), bundle);
                 EventoController controlador = new EventoController();
                 fxmlLoader.setController(controlador);
                 Scene scene = new Scene(fxmlLoader.load());
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.setResizable(false);
-                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
+                try {
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                    stage.getIcons().add(img);
+                } catch (Exception e) {
+                    System.out.println("error.img " + e.getMessage());
+                }
+                scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
                 stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.event") + " - " + resources.getString("app.name"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
@@ -332,15 +356,23 @@ public class OlimpiadasControler {
             // Agregar nuevo Deporte
             try {
                 Window ventana = tablaVista.getScene().getWindow();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Deporte.fxml"), resources);
+                String idioma = Propiedades.getValor("language");
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportes.fxml"), bundle);
                 DeportesController controlador = new DeportesController();
                 fxmlLoader.setController(controlador);
                 Scene scene = new Scene(fxmlLoader.load());
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.setResizable(false);
-                stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Olimpiadas.png")));
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.sport") + " - " + resources.getString("app.name"));
+                try {
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                    stage.getIcons().add(img);
+                } catch (Exception e) {
+                    System.out.println("error.img " + e.getMessage());
+                }
+                scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.sports") + " - " + resources.getString("app.name"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
