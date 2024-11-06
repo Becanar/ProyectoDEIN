@@ -25,7 +25,7 @@ public class App extends Application {
             Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
             stage.getIcons().add(img);
         } catch (Exception e) {
-            System.out.println("Error al cargar la imagen: " + e.getMessage());
+            System.out.println("Error al cargsar la imagen: " + e.getMessage());
         }
         scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
         stage.setTitle("GESTOR-OLIMPIADAS");
