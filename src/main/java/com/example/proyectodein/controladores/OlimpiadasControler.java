@@ -1,6 +1,5 @@
 package com.example.proyectodein.controladores;
 
-import com.example.proyectodein.app.App;
 import com.example.proyectodein.dao.*;
 import com.example.proyectodein.model.*;
 
@@ -23,7 +22,9 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
 public class OlimpiadasControler {
     @FXML
@@ -113,7 +114,96 @@ public class OlimpiadasControler {
     }
 
     private void borrar(Object o) {
+            Object seleccion = tablaVista.getSelectionModel().getSelectedItem();
+            if (seleccion != null) {
+                String item = comboBoxDatos.getSelectionModel().getSelectedItem();
+
+                if (item.equals("Olimpiadas")) {
+                    // Olimpiada
+                    Olimpiada olimpiada = (Olimpiada) seleccion;
+                    if (DaoOlimpiada.esEliminable(olimpiada)) {
+                        mostrarConfirmacionYEliminar("Olimpiada", "¿Seguro que deseas eliminar esta olimpiada?",
+                                () -> DaoOlimpiada.eliminar(olimpiada), this::cargarOlimpiadas);
+                    } else {
+                        alerta("Esta olimpiada no puede ser eliminada porque está asociada a otros registros.");
+                    }
+
+                } else if (item.equals("Deportistas")) {
+                    // Deportista
+                    Deportista deportista = (Deportista) seleccion;
+                    if (DaoDeportista.esEliminable(deportista)) {
+                        mostrarConfirmacionYEliminar("Deportista", "¿Seguro que deseas eliminar este deportista?",
+                                () -> DaoDeportista.eliminar(deportista), this::cargarDeportistas);
+                    } else {
+                        alerta("Este deportista no puede ser eliminado porque está asociado a otros registros.");
+                    }
+
+                } else if (item.equals("Equipos")) {
+                    // Equipo
+                    Equipo equipo = (Equipo) seleccion;
+                    if (DaoEquipo.esEliminable(equipo)) {
+                        mostrarConfirmacionYEliminar("Equipo", "¿Seguro que deseas eliminar este equipo?",
+                                () -> DaoEquipo.eliminar(equipo), this::cargarEquipos);
+                    } else {
+                        alerta("Este equipo no puede ser eliminado porque está asociado a otros registros.");
+                    }
+
+                } else if (item.equals("Eventos")) {
+                    // Evento
+                    Evento evento = (Evento) seleccion;
+                    if (DaoEvento.esEliminable(evento)) {
+                        mostrarConfirmacionYEliminar("Evento", "¿Seguro que deseas eliminar este evento?",
+                                () -> DaoEvento.eliminar(evento), this::cargarEventos);
+                    } else {
+                        alerta("Este evento no puede ser eliminado porque está asociado a otros registros.");
+                    }
+
+                } else if (item.equals("Deportes")) {
+                    // Deporte
+                    Deporte deporte = (Deporte) seleccion;
+                    if (DaoDeporte.esEliminable(deporte)) {
+                        mostrarConfirmacionYEliminar("Deporte", "¿Seguro que deseas eliminar este deporte?",
+                                () -> DaoDeporte.eliminar(deporte), this::cargarDeportes);
+                    } else {
+                        alerta("Este deporte no puede ser eliminado porque está asociado a otros registros.");
+                    }
+
+                } else if (item.equals("Participaciones")) {
+                    // Participación
+                    Participacion participacion = (Participacion) seleccion;
+                    mostrarConfirmacionYEliminar("Participación", "¿Seguro que deseas eliminar esta participación?",
+                            () -> DaoParticipacion.eliminar(participacion), this::cargarParticipaciones);
+                }
+            } else {
+                alerta("Por favor, selecciona un elemento para eliminar.");
+            }
+
+
     }
+
+
+    private void mostrarConfirmacionYEliminar(String tipoElemento, String mensajeConfirmacion, Supplier<Boolean> eliminacion, Runnable recargar) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(tablaVista.getScene().getWindow());
+        alert.setHeaderText(null);
+        alert.setTitle("Confirmación");
+        alert.setContentText(mensajeConfirmacion);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (eliminacion.get()) {  // Llamar a .get() en lugar de .run() para el Supplier
+                recargar.run();
+                confirmacion(tipoElemento + " eliminado exitosamente.");
+            } else {
+                alerta("No se pudo eliminar el " + tipoElemento.toLowerCase() + ".");
+            }
+        }
+    }
+
+
+    private void confirmacion(String s) {
+        System.out.println(s);
+    }
+
 
     private void editar(Object o) {
     }

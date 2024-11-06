@@ -149,11 +149,15 @@ public class OlimpiadasVController implements Initializable {
                 } else {
                     confirmacion(resources.getString("save.olympics"));
                     cargarOlimpiadas();
+                    Stage stage = (Stage) txtNombre.getScene().getWindow();
+                    stage.close();
                 }
             } else {
                 if (DaoOlimpiada.modificar(this.olimpiada, nuevo)) {
                     confirmacion(resources.getString("update.olympics"));
                     cargarOlimpiadas();
+                    Stage stage = (Stage) txtNombre.getScene().getWindow();
+                    stage.close();
                 } else {
                     alerta(resources.getString("save.fail"));
                 }

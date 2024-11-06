@@ -79,7 +79,7 @@
                   </Label>
                   <FlowPane hgap="10.0">
                      <children>
-                        <RadioButton fx:id="rbFemale" mnemonicParsing="false" selected="true" text="%athlete.sex.female">
+                        <RadioButton fx:id="rbFemale" mnemonicParsing="false" selected="true" text="%athlete.sex.female" toggleGroup="$tgSexo">
                            <toggleGroup>
                               <ToggleGroup fx:id="tgSexo" />
                            </toggleGroup>

@@ -51,9 +51,7 @@ public class Evento {
 
     @Override
     public String toString() {
-        return "Evento{" +
-                "nombre='" + nombre + '\'' +
-                '}';
+        return nombre;
     }
 
     @Override

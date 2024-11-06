@@ -15,7 +15,7 @@
    <children>
       <FlowPane alignment="CENTER">
          <children>
-            <Label text="%participation.title">
+            <Label text="%parTitulo">
                <font>
                   <Font size="24.0" />
                </font>
@@ -29,7 +29,7 @@
          <children>
             <VBox prefHeight="200.0">
                <children>
-                  <Label text="%participation.athlete">
+                  <Label text="%parAtleta">
                      <padding>
                         <Insets bottom="5.0" />
                      </padding>
@@ -39,7 +39,7 @@
             </VBox>
             <VBox prefHeight="200.0">
                <children>
-                  <Label text="%participation.event">
+                  <Label text="%parEvento">
                      <padding>
                         <Insets bottom="5.0" />
                      </padding>
@@ -49,7 +49,7 @@
             </VBox>
             <VBox prefHeight="200.0">
                <children>
-                  <Label text="%participation.team">
+                  <Label text="%parEquipo">
                      <padding>
                         <Insets bottom="5.0" />
                      </padding>
@@ -66,13 +66,13 @@
          <children>
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Label text="%participation.age" />
+                  <Label text="%parEdad" />
                   <TextField fx:id="txtEdad">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                      <tooltip>
-                        <Tooltip text="%participation.age.tooltip" />
+                        <Tooltip text="%parEdadTool" />
                      </tooltip>
                   </TextField>
                </children>
@@ -82,13 +82,13 @@
             </HBox>
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Label text="%participation.medal" />
+                  <Label text="%parMedalla" />
                   <TextField fx:id="txtMedalla">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                      <tooltip>
-                        <Tooltip text="%participation.medal.tooltip" />
+                        <Tooltip text="%parMedallaTool" />
                      </tooltip>
                   </TextField>
                </children>
@@ -100,8 +100,8 @@
       </FlowPane>
       <FlowPane alignment="CENTER" hgap="20.0">
          <children>
-            <Button defaultButton="true" mnemonicParsing="false" onAction="#guardar" styleClass="btnGuardar" text="%btn.save" />
-            <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelar" styleClass="btnCerrar" text="%btn.cancel" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#guardar" styleClass="btnGuardar" text="%btn.guardar" />
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelar" styleClass="btnCerrar" text="%btn.cancelar" />
          </children>
          <VBox.margin>
             <Insets top="5.0" />

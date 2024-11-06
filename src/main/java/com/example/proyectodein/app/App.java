@@ -30,10 +30,10 @@ public class App extends Application {
             Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
             stage.getIcons().add(img);
         } catch (Exception e) {
-            System.out.println("error.img " + e.getMessage());
+            System.out.println(bundle.getString("error.img") + e.getMessage());
         }
         scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-        stage.setTitle("app.name");
+        stage.setTitle(bundle.getString("app.name"));
         stage.setScene(scene);
         stage.show();
     }

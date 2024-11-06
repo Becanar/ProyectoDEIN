@@ -40,10 +40,7 @@ public class Equipo {
 
     @Override
     public String toString() {
-        return "Equipo{" +
-                "nombre='" + nombre + '\'' +
-                ", iniciales='" + iniciales + '\'' +
-                '}';
+        return nombre+","+iniciales;
     }
 
     @Override

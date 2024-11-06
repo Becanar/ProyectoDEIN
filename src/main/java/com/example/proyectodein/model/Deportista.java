@@ -73,9 +73,7 @@ public class Deportista {
 
     @Override
     public String toString() {
-        return "Deportista{" +
-                "nombre='" + nombre + '\'' +
-                '}';
+        return nombre;
     }
 
     @Override

@@ -95,6 +95,8 @@ public class EquiposController implements Initializable {
             if (DaoEquipo.eliminar(equipo)) {
                 confirmacion(resources.getString("delete.teams.success"));
                 cargarEquipos();
+                Stage stage = (Stage) txtNombre.getScene().getWindow();
+                stage.close();
             } else {
                 alerta(resources.getString("delete.teams.fail"));
             }
@@ -127,11 +129,15 @@ public class EquiposController implements Initializable {
                 } else {
                     confirmacion(resources.getString("save.teams"));
                     cargarEquipos();
+                    Stage stage = (Stage) txtNombre.getScene().getWindow();
+                    stage.close();
                 }
             } else {
                 if (DaoEquipo.modificar(equipo, nuevo)) {
                     confirmacion(resources.getString("update.teams"));
                     cargarEquipos();
+                    Stage stage = (Stage) txtNombre.getScene().getWindow();
+                    stage.close();
                 } else {
                     alerta(resources.getString("save.fail"));
                 }

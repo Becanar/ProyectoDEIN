@@ -62,11 +62,7 @@ public class Olimpiada {
 
     @Override
     public String toString() {
-        return "Olimpiada{" +
-                "nombre='" + nombre + '\'' +
-                ", temporada='" + temporada + '\'' +
-                ", ciudad='" + ciudad + '\'' +
-                '}';
+        return nombre+", "+ciudad;
     }
 
     @Override

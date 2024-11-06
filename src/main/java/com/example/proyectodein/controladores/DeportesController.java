@@ -91,6 +91,8 @@ public class DeportesController implements Initializable {
             if (DaoDeporte.eliminar(deporte)) {
                 confirmacion(resources.getString("delete.sports.success"));
                 cargarDeportes();
+                Stage stage = (Stage) txtNombre.getScene().getWindow();
+                stage.close();
             } else {
                 alerta(resources.getString("delete.sports.fail"));
             }
@@ -111,11 +113,15 @@ public class DeportesController implements Initializable {
                 } else {
                     confirmacion(resources.getString("save.sports"));
                     cargarDeportes();
+                    Stage stage = (Stage) txtNombre.getScene().getWindow();
+                    stage.close();
                 }
             } else {
                 if (DaoDeporte.modificar(this.deporte, nuevo)) {
                     confirmacion(resources.getString("update.sports"));
                     cargarDeportes();
+                    Stage stage = (Stage) txtNombre.getScene().getWindow();
+                    stage.close();
                 } else {
                     alerta(resources.getString("save.fail"));
                 }
