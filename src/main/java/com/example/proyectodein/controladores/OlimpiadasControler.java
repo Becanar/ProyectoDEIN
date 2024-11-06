@@ -1,11 +1,7 @@
 package com.example.proyectodein.controladores;
 
 import com.example.proyectodein.app.App;
-import com.example.proyectodein.dao.DaoDeporte;
-import com.example.proyectodein.dao.DaoDeportista;
-import com.example.proyectodein.dao.DaoEquipo;
-import com.example.proyectodein.dao.DaoEvento;
-import com.example.proyectodein.dao.DaoOlimpiada;
+import com.example.proyectodein.dao.*;
 import com.example.proyectodein.model.*;
 
 import javafx.beans.property.SimpleIntegerProperty;
@@ -124,7 +120,7 @@ public class OlimpiadasControler {
 
     private void cargarDatosComboBox() {
         ObservableList<String> opciones = FXCollections.observableArrayList(
-                "Olimpiadas", "Deportistas", "Equipos", "Eventos", "Deportes"
+                "Olimpiadas", "Deportistas", "Equipos", "Eventos", "Deportes","Participaciones"
         );
         comboBoxDatos.setItems(opciones);
     }
@@ -150,10 +146,41 @@ public class OlimpiadasControler {
             case "Deportes":
                 cargarDeportes();
                 break;
+            case "Participaciones":
+                cargarParticipaciones();
             default:
                 break;
         }
     }
+    private void cargarParticipaciones() {
+        // Columna para el nombre del deportista
+        TableColumn<Participacion, String> colDeportista = new TableColumn<>("Deportista");
+        colDeportista.setCellValueFactory(cellData -> new SimpleStringProperty(DaoDeportista.getDeportista(cellData.getValue().getIdDeportista()).getNombre()));
+
+        // Columna para el nombre del evento
+        TableColumn<Participacion, String> colEvento = new TableColumn<>("Evento");
+        colEvento.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEvento.getEvento(cellData.getValue().getIdEvento()).getNombre()));
+
+        // Columna para la posición
+        TableColumn<Participacion, String> colPosicion = new TableColumn<>("Equipo");
+        colPosicion.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEquipo.getEquipo(cellData.getValue().getIdEquipo()).getNombre()));
+
+        // Columna para la medalla (si tiene)
+        TableColumn<Participacion, String> colMedalla = new TableColumn<>("Medalla");
+        colMedalla.setCellValueFactory(cellData -> {
+            String medalla = cellData.getValue().getMedalla();
+            return new SimpleStringProperty(medalla != null ? medalla : "NA");
+        });
+
+
+        // Agregar todas las columnas a la tabla
+        tablaVista.getColumns().addAll(colDeportista, colEvento, colPosicion, colMedalla);
+
+        // Cargar los datos de las participaciones
+        lstEntera.setAll(DaoParticipacion.cargarListado());
+        tablaVista.setItems(lstEntera);
+    }
+
 
     private void cargarOlimpiadas() {
         TableColumn<Olimpiada, String> colNombre = new TableColumn<>("Nombre");
@@ -377,6 +404,35 @@ public class OlimpiadasControler {
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarDeportes();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                alerta(resources.getString("message.window_open"));
+            }
+        }else if (seleccion.equals("Participaciones")) {
+            // Agregar nuevo Deporte
+            try {
+                Window ventana = tablaVista.getScene().getWindow();
+                String idioma = Propiedades.getValor("language");
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/participacion.fxml"), bundle);
+                ParticipacionController controlador = new ParticipacionController();
+                fxmlLoader.setController(controlador);
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                try {
+                    Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                    stage.getIcons().add(img);
+                } catch (Exception e) {
+                    System.out.println("error.img " + e.getMessage());
+                }
+                scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.participation") + " - " + resources.getString("app.name"));
+                stage.initOwner(ventana);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                cargarParticipaciones();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 alerta(resources.getString("message.window_open"));
