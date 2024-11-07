@@ -91,15 +91,20 @@ public class DeportistaController implements Initializable {
             if (deportista.getFoto() != null) {
                 this.imagen = deportista.getFoto();
                 try {
-                    InputStream imagen = deportista.getFoto().getBinaryStream();
-                    foto.setImage(new Image(imagen));
+                    InputStream imagenStream = deportista.getFoto().getBinaryStream();
+                    foto.setImage(new Image(imagenStream));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 btnFotoBorrar.setDisable(false);
+            } else {
+                // Si no tiene foto, cargar la imagen predeterminada (null.jpg)
+                foto.setImage(new Image(getClass().getResourceAsStream("/com/example/proyectodein/images/null.jpg")));
+                btnFotoBorrar.setDisable(true);
             }
         }
     }
+
 
     /**
      * Método para borrar la foto del deportista.
@@ -133,22 +138,48 @@ public class DeportistaController implements Initializable {
     @FXML
     void guardar(ActionEvent event) {
         ArrayList<String> errores = validar();
+
         if (!errores.isEmpty()) {
             alerta(errores);
         } else {
             Deportista nuevo = new Deportista();
             nuevo.setNombre(txtNombre.getText());
+
+            // Configuración del sexo
             if (rbFemale.isSelected()) {
                 nuevo.setSexo('F');
             } else {
                 nuevo.setSexo('M');
             }
-            if (DaoDeportista.getDeportista(nuevo.getNombre(), nuevo.getSexo()) == null) {
+
+            // Verificación de deportista duplicado en la base de datos
+            Deportista existente = DaoDeportista.getDeportista(nuevo.getNombre(), nuevo.getSexo());
+            if (existente == null || (this.deportista != null && existente.getIdDeportista() == this.deportista.getIdDeportista())) {
+
+                // Configuración de altura y peso
                 nuevo.setPeso(Integer.parseInt(txtPeso.getText()));
                 nuevo.setAltura(Integer.parseInt(txtAltura.getText()));
-                nuevo.setFoto(this.imagen);
+
+                // Configuración de la imagen (Blob)
+                if (this.imagen == null) {
+                    try {
+                        // Usa una imagen predeterminada en caso de que la imagen esté ausente
+                        InputStream imagenDefault = getClass().getResourceAsStream("/com/example/proyectodein/images/null.jpg");
+                        Blob defaultBlob = DaoDeportista.convertInputStreamToBlob(imagenDefault);
+                        nuevo.setFoto(defaultBlob);
+                    } catch (Exception e) {
+                        errores.add("Error al cargar la imagen predeterminada.");
+                        alerta(errores);
+                        return;
+                    }
+                } else {
+                    // Si ya tenemos una imagen seleccionada
+                    nuevo.setFoto(this.imagen);
+                }
+
+                // Inserta o actualiza el deportista en la base de datos
                 if (this.deportista == null) {
-                    // Si es un nuevo deportista, se inserta en la base de datos
+                    // Insertar nuevo deportista
                     int id = DaoDeportista.insertar(nuevo);
                     if (id == -1) {
                         ArrayList<String> failMessages = new ArrayList<>();
@@ -162,7 +193,7 @@ public class DeportistaController implements Initializable {
                         stage.close();
                     }
                 } else {
-                    // Si se está editando, se actualiza en la base de datos
+                    // Actualizar deportista existente
                     if (DaoDeportista.modificar(this.deportista, nuevo)) {
                         ArrayList<String> successMessages = new ArrayList<>();
                         successMessages.add(resources.getString("update.athlete"));
@@ -182,6 +213,7 @@ public class DeportistaController implements Initializable {
             }
         }
     }
+
 
     /**
      * Valida los datos ingresados del deportista.

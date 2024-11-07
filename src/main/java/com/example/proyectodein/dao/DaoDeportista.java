@@ -5,10 +5,7 @@ import com.example.proyectodein.model.Deportista;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 
 /**
@@ -278,5 +275,32 @@ public class DaoDeportista {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Blob convertInputStreamToBlob(InputStream inputStream) throws SQLException, IOException {
+        // Obtener la conexión a la base de datos desde ConectorDB
+        ConectorDB connection = new ConectorDB();
+        Connection conn = connection.getConnection();
+
+        // Crear un Blob vacío utilizando la conexión
+        Blob blob = conn.createBlob();
+
+        // Escribir el contenido del InputStream en el Blob
+        try (OutputStream outputStream = blob.setBinaryStream(1)) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } finally {
+            // Cerrar el InputStream si es necesario
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            // Cerrar la conexión de la base de datos
+            connection.closeConexion();
+        }
+
+        return blob;
     }
 }

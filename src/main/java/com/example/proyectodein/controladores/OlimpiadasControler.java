@@ -5,6 +5,7 @@ import com.example.proyectodein.dao.*;
 import com.example.proyectodein.model.*;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,13 +16,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Supplier;
 /**
@@ -539,16 +544,63 @@ public class OlimpiadasControler {
      */
     private void cargarDeportistas() {
         if (tablaVista.getColumns().isEmpty()) {
-        TableColumn<Deportista, String> colNombre = new TableColumn<>(resources.getString("name"));
-        colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
+            // Columna de nombre
+            TableColumn<Deportista, String> colNombre = new TableColumn<>(resources.getString("name"));
+            colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
-        TableColumn<Deportista, String> colSexo = new TableColumn<>(resources.getString("sex"));
-        colSexo.setCellValueFactory(cellData -> new SimpleStringProperty(""+cellData.getValue().getSexo()));
+            // Columna de sexo
+            TableColumn<Deportista, String> colSexo = new TableColumn<>(resources.getString("sex"));
+            colSexo.setCellValueFactory(cellData -> new SimpleStringProperty("" + cellData.getValue().getSexo()));
 
-        tablaVista.getColumns().addAll(colNombre, colSexo);}
+            // Columna de imagen
+            TableColumn<Deportista, Image> colImagen = new TableColumn<>(resources.getString("image"));
+            colImagen.setCellValueFactory(cellData -> {
+                try {
+                    // Obtener el Blob de la imagen del deportista
+                    Blob imagenBlob = cellData.getValue().getFoto();  // Suponiendo que getImagen() devuelve un Blob
+                    if (imagenBlob != null) {
+                        // Convertir el Blob a un array de bytes
+                        byte[] imageBytes = imagenBlob.getBytes(1, (int) imagenBlob.length());
+                        return new SimpleObjectProperty<>(new Image(new ByteArrayInputStream(imageBytes)));
+                    } else {
+                        // Si no hay imagen, cargar la imagen por defecto
+                        return new SimpleObjectProperty<>(new Image(getClass().getResourceAsStream("/com/example/proyectodein/images/null.jpg")));
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace(); // Si ocurre un error con el Blob
+                    return new SimpleObjectProperty<>(new Image(getClass().getResourceAsStream("/com/example/proyectodein/images/null.jpg")));
+                }
+            });
+
+            // Configuración para mostrar la imagen en la celda
+            colImagen.setCellFactory(col -> {
+                TableCell<Deportista, Image> cell = new TableCell<Deportista, Image>() {
+                    @Override
+                    protected void updateItem(Image item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            ImageView imageView = new ImageView(item);
+                            imageView.setFitHeight(50); // Establecer el tamaño de la imagen
+                            imageView.setFitWidth(50);
+                            setGraphic(imageView);
+                        }
+                    }
+                };
+                return cell;
+            });
+
+            // Añadir las columnas a la tabla
+            tablaVista.getColumns().addAll(colNombre, colSexo, colImagen);
+        }
+
+        // Cargar los deportistas
         lstEntera.setAll(DaoDeportista.cargarListado());
         tablaVista.setItems(lstEntera);
     }
+
+
     /**
      * Carga los datos en la tabla para mostrar los equipos, que incluyen el nombre y las iniciales del país
      * de cada equipo.
