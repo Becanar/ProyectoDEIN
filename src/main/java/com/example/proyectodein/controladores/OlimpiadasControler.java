@@ -1,5 +1,6 @@
 package com.example.proyectodein.controladores;
 
+import com.example.proyectodein.app.App;
 import com.example.proyectodein.dao.*;
 import com.example.proyectodein.model.*;
 
@@ -42,11 +43,14 @@ public class OlimpiadasControler {
     private ObservableList<Object> lstEntera = FXCollections.observableArrayList();
     private ObservableList<Object> lstFiltrada = FXCollections.observableArrayList();
 
+
+
     @FXML
     private ResourceBundle resources;
 
     @FXML
     private void initialize() {
+
         cargarDatosComboBox();
         comboBoxDatos.setValue(resources.getString("olympics"));
         actualizarTabla(null);
@@ -205,7 +209,7 @@ public class OlimpiadasControler {
                 try {
                     Window ventana = tablaVista.getScene().getWindow();
                     String idioma = Propiedades.getValor("language");
-                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/olimpiadasV.fxml"), bundle);
                     OlimpiadasVController controlador = new OlimpiadasVController(olimpiada);  // Pasamos la Olimpiada seleccionada
                     fxmlLoader.setController(controlador);
@@ -236,7 +240,7 @@ public class OlimpiadasControler {
                 try {
                     Window ventana = tablaVista.getScene().getWindow();
                     String idioma = Propiedades.getValor("language");
-                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportista.fxml"), bundle);
                     DeportistaController controlador = new DeportistaController(deportista);  // Pasamos el Deportista seleccionado
                     fxmlLoader.setController(controlador);
@@ -267,7 +271,7 @@ public class OlimpiadasControler {
                 try {
                     Window ventana = tablaVista.getScene().getWindow();
                     String idioma = Propiedades.getValor("language");
-                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/equipo.fxml"), bundle);
                     EquiposController controlador = new EquiposController(equipo);  // Pasamos el Equipo seleccionado
                     fxmlLoader.setController(controlador);
@@ -298,7 +302,7 @@ public class OlimpiadasControler {
                 try {
                     Window ventana = tablaVista.getScene().getWindow();
                     String idioma = Propiedades.getValor("language");
-                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/evento.fxml"), bundle);
                     EventoController controlador = new EventoController(evento);  // Pasamos el Evento seleccionado
                     fxmlLoader.setController(controlador);
@@ -329,7 +333,7 @@ public class OlimpiadasControler {
                 try {
                     Window ventana = tablaVista.getScene().getWindow();
                     String idioma = Propiedades.getValor("language");
-                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportes.fxml"), bundle);
                     DeportesController controlador = new DeportesController(deporte);  // Pasamos el Deporte seleccionado
                     fxmlLoader.setController(controlador);
@@ -360,7 +364,7 @@ public class OlimpiadasControler {
                 try {
                     Window ventana = tablaVista.getScene().getWindow();
                     String idioma = Propiedades.getValor("language");
-                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                    ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/participacion.fxml"), bundle);
                     ParticipacionController controlador = new ParticipacionController(participacion);  // Pasamos la Participación seleccionada
                     fxmlLoader.setController(controlador);
@@ -403,7 +407,7 @@ public class OlimpiadasControler {
     public void actualizarTabla(ActionEvent event) {
         // Cargar el ResourceBundle para acceder a los mensajes
         String idioma = Propiedades.getValor("language");
-        ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+        ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
 
         // Obtener el valor de la clave "participations" desde el archivo de recursos
         String olimpiadas = resources.getString("olympics");
@@ -541,16 +545,63 @@ public class OlimpiadasControler {
 
 
     public void cambiarIngles(ActionEvent actionEvent) {
-        // Lógica para cambiar idioma a inglés
+        cambiarIdioma("en");
     }
 
     public void cambiarEsp(ActionEvent actionEvent) {
-        // Lógica para cambiar idioma a español
+        cambiarIdioma("es");
     }
 
-    public void cambiarEus(ActionEvent actionEvent) {
-        // Lógica para cambiar idioma a euskera
+
+    /**
+     * Cambia el idioma de la interfaz a uno específico.
+     *
+     * @param idioma El código del idioma a cambiar (eu, es, en).
+     */
+
+    public void cambiarIdioma(String idioma) {
+        // Actualizar el archivo db.properties con el nuevo idioma
+        Propiedades.setIdioma("language", idioma);
+
+        // Cargar el nuevo ResourceBundle con el idioma seleccionado
+        ResourceBundle bundle = ResourceBundle.getBundle("com.example.proyectodein.languages.lan", new Locale(idioma));
+
+        // Obtener la ventana actual (en este caso el Stage principal)
+        Stage stage = (Stage) btAniadir.getScene().getWindow();
+
+        // Actualizar la ventana principal
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/example/proyectodein/fxml/olimpiadas.fxml"), bundle);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle(bundle.getString("app.name"));
+            stage.setResizable(false);
+
+            try {
+                Image img = new Image(getClass().getResource("/com/example/proyectodein/images/ol.png").toString());
+                stage.getIcons().add(img);
+            } catch (Exception e) {
+                System.out.println(bundle.getString("error.img") + e.getMessage());
+            }
+
+            scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
+            stage.setTitle(bundle.getString("app.name"));
+            stage.setScene(scene);
+            stage.show();
+
+            // Cierra todas las ventanas auxiliares y vuelve a abrirlas con el idioma actualizado (si es necesario)
+            // Ejemplo:
+            if (stage.getOwner() != null) {
+                Stage owner = (Stage)stage.getOwner();
+                // Aquí puedes usar un código para reiniciar o actualizar otras ventanas hijas
+                // owner.close();  // O también puedes recargar otras ventanas
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     @FXML
     void aniadir(ActionEvent event) {
@@ -561,7 +612,7 @@ public class OlimpiadasControler {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
-                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/olimpiadasV.fxml"), bundle);
                 OlimpiadasVController controlador = new OlimpiadasVController();
                 fxmlLoader.setController(controlador);
@@ -589,7 +640,7 @@ public class OlimpiadasControler {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
-                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportista.fxml"), bundle);
                 DeportistaController controlador = new DeportistaController();
                 fxmlLoader.setController(controlador);
@@ -618,7 +669,7 @@ public class OlimpiadasControler {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
-                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/equipo.fxml"), bundle);
                 EquiposController controlador = new EquiposController();
                 fxmlLoader.setController(controlador);
@@ -647,7 +698,7 @@ public class OlimpiadasControler {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
-                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/evento.fxml"), bundle);
                 EventoController controlador = new EventoController();
                 fxmlLoader.setController(controlador);
@@ -676,7 +727,7 @@ public class OlimpiadasControler {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
-                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/deportes.fxml"), bundle);
                 DeportesController controlador = new DeportesController();
                 fxmlLoader.setController(controlador);
@@ -705,7 +756,7 @@ public class OlimpiadasControler {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
-                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+                ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lan", new Locale(idioma));
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/proyectodein/fxml/participacion.fxml"), bundle);
                 ParticipacionController controlador = new ParticipacionController();
                 fxmlLoader.setController(controlador);

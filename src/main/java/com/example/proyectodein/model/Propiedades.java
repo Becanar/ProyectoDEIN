@@ -1,6 +1,6 @@
 package com.example.proyectodein.model;
 
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -33,4 +33,23 @@ public abstract class Propiedades {
 		}
 		throw new RuntimeException("El fichero de configuracion no existe"); // Lanza excepción si no se encuentra
 	}
+
+	public static void setIdioma(String clave, String cambio) {
+		Properties properties = new Properties();
+
+		// Cargar las propiedades existentes
+		try (FileInputStream fis = new FileInputStream("db.properties")) {
+			properties.load(fis);  // Carga las propiedades desde el archivo
+
+			// Actualizar la propiedad 'language'
+			properties.setProperty("language", cambio);
+
+			// Guardar las propiedades modificadas de vuelta al archivo
+			try (FileOutputStream fos = new FileOutputStream("db.properties")) {
+				properties.store(fos, "Actualización del idioma"); // Guarda con un comentario si lo deseas
+			}
+		} catch (IOException e) {
+			e.printStackTrace(); // Manejo de excepciones
+		}
+    }
 }

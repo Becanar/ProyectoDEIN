@@ -27,7 +27,6 @@
                      <items>
                         <MenuItem fx:id="menuEn" mnemonicParsing="false" onAction="#cambiarIngles" text="%menuEn" />
                         <MenuItem fx:id="menuEs" mnemonicParsing="false" onAction="#cambiarEsp" text="%menuEs"  />
-                        <MenuItem fx:id="menuEus" mnemonicParsing="false" onAction="#cambiarEus" text="%menuEus"  />
                      </items>
                   </Menu>
                </items>
