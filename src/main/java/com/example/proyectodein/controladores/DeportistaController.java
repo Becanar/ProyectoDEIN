@@ -114,7 +114,7 @@ public class DeportistaController implements Initializable {
     @FXML
     void borrarFoto(ActionEvent event) {
         imagen = null;
-        foto.setImage(new Image(getClass().getResourceAsStream("/images/deportista.png")));
+        foto.setImage(new Image(getClass().getResourceAsStream("/com/example/proyectodein/images/null.jpg")));
         btnFotoBorrar.setDisable(true);
     }
 
