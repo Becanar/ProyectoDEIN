@@ -14,6 +14,12 @@ import java.sql.SQLException;
 
 public class DaoEvento {
 
+    /**
+     * Obtiene un evento de la base de datos dado su ID.
+     *
+     * @param id El ID del evento a buscar.
+     * @return El evento correspondiente al ID, o null si no se encuentra.
+     */
     public static Evento getEvento(int id) {
         ConectorDB connection;
         Evento evento = null;
@@ -42,6 +48,14 @@ public class DaoEvento {
         return evento;
     }
 
+    /**
+     * Obtiene un evento de la base de datos buscando por nombre, deporte y olimpiada.
+     *
+     * @param str El nombre del evento.
+     * @param dep El ID del deporte.
+     * @param ol El ID de la olimpiada.
+     * @return El evento correspondiente, o null si no se encuentra.
+     */
     public static Evento getEvento(String str,int dep,int ol ) {
         ConectorDB connection;
         Evento evento = null;
@@ -72,7 +86,13 @@ public class DaoEvento {
         return evento;
     }
 
-
+    /**
+     * Verifica si un evento es eliminable de la base de datos.
+     * Un evento es eliminable si no tiene participaciones asociadas.
+     *
+     * @param evento El evento a verificar.
+     * @return true si el evento es eliminable, false en caso contrario.
+     */
     public static boolean esEliminable(Evento evento) {
         ConectorDB connection;
         try {
@@ -97,6 +117,11 @@ public class DaoEvento {
         return false;
     }
 
+    /**
+     * Carga todos los eventos de la base de datos.
+     *
+     * @return Una lista observable de todos los eventos en la base de datos.
+     */
     public static ObservableList<Evento> cargarListado() {
         ConectorDB connection;
         ObservableList<Evento> eventos = FXCollections.observableArrayList();
@@ -125,6 +150,13 @@ public class DaoEvento {
         return eventos;
     }
 
+    /**
+     * Modifica los detalles de un evento en la base de datos.
+     *
+     * @param evento El evento a modificar.
+     * @param eventoNuevo El nuevo evento con los valores actualizados.
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
     public static boolean modificar(Evento evento, Evento eventoNuevo) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -148,6 +180,13 @@ public class DaoEvento {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Inserta un nuevo evento en la base de datos.
+     *
+     * @param evento El evento a insertar.
+     * @return El ID generado para el nuevo evento, o -1 si la inserción falla.
+     */
     public  static int insertar(Evento evento) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -179,6 +218,13 @@ public class DaoEvento {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Elimina un evento de la base de datos.
+     *
+     * @param evento El evento a eliminar.
+     * @return true si la eliminación fue exitosa, false en caso contrario.
+     */
     public static boolean eliminar(Evento evento) {
         ConectorDB connection;
         PreparedStatement pstmt;

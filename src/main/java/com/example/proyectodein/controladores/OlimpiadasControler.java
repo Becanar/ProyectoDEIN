@@ -24,7 +24,12 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
-
+/**
+ * Controlador para gestionar la vista de las Olimpiadas en la interfaz de usuario.
+ * Esta clase maneja la interacción con las entidades relacionadas con las olimpiadas, como
+ * deportistas, equipos, eventos y deportes. Permite realizar acciones como añadir, eliminar
+ * y filtrar las distintas entidades en la tabla.
+ */
 public class OlimpiadasControler {
     @FXML
     private Button btAniadir;
@@ -47,7 +52,11 @@ public class OlimpiadasControler {
 
     @FXML
     private ResourceBundle resources;
-
+    /**
+     * Método de inicialización que se ejecuta al cargar la vista.
+     * Se encargará de cargar los datos en los controles (ComboBox, TableView),
+     * configurar las acciones de los botones y permitir la búsqueda a través del campo de texto.
+     */
     @FXML
     private void initialize() {
 
@@ -75,7 +84,10 @@ public class OlimpiadasControler {
         });
         txtNombre.setOnKeyTyped(keyEvent -> filtrar());
     }
-
+    /**
+     * Filtra las entidades mostradas en la tabla según el texto ingresado en el campo de búsqueda.
+     * El filtro es sensible al texto y buscará coincidencias en los nombres de las entidades.
+     */
     private void filtrar() {
         String valor = txtNombre.getText();
         if (valor == null || valor.isEmpty()) {
@@ -106,7 +118,13 @@ public class OlimpiadasControler {
         }
     }
 
-
+    /**
+     * Elimina un elemento de la tabla según la selección del usuario.
+     * Muestra un mensaje de confirmación antes de realizar la eliminación de la entidad.
+     * La eliminación está condicionada a si la entidad es eliminable o no.
+     *
+     * @param o El objeto a eliminar, dependiendo de la selección de la tabla.
+     */
     private void borrar(Object o) {
             Object seleccion = tablaVista.getSelectionModel().getSelectedItem();
             if (seleccion != null) {
@@ -177,7 +195,15 @@ public class OlimpiadasControler {
 
     }
 
-
+    /**
+     * Muestra una alerta de confirmación para la eliminación de una entidad seleccionada.
+     * Si el usuario confirma, se realiza la eliminación y se actualiza la vista correspondiente.
+     *
+     * @param tipoElemento El nombre de la entidad que se va a eliminar (ej. "Olimpiada", "Deportista").
+     * @param mensajeConfirmacion El mensaje de confirmación a mostrar.
+     * @param eliminacion La acción a ejecutar para eliminar la entidad.
+     * @param recargar La acción para recargar la vista después de la eliminación.
+     */
     private void mostrarConfirmacionYEliminar(String tipoElemento, String mensajeConfirmacion, Supplier<Boolean> eliminacion, Runnable recargar) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(tablaVista.getScene().getWindow());
@@ -194,7 +220,12 @@ public class OlimpiadasControler {
             }
         }
     }
-
+    /**
+     * Permite editar el elemento seleccionado en la tabla. Abre una ventana modal para editar
+     * el elemento (Olimpiada, Deportista, Equipo, Evento, Deporte o Participación).
+     *
+     * @param o Objeto seleccionado (no se utiliza directamente en este método).
+     */
 
     private void editar(Object o) {
         // Obtener el objeto seleccionado desde la tabla
@@ -395,7 +426,10 @@ public class OlimpiadasControler {
         }
     }
 
-
+    /**
+     * Carga los datos en el ComboBox de selección de tipo de elementos, con las opciones disponibles
+     * como "Olimpiadas", "Deportistas", "Equipos", "Eventos", "Deportes" y "Participaciones".
+     */
 
     private void cargarDatosComboBox() {
         ObservableList<String> opciones = FXCollections.observableArrayList(
@@ -403,7 +437,13 @@ public class OlimpiadasControler {
         );
         comboBoxDatos.setItems(opciones);
     }
-
+    /**
+     * Actualiza la tabla según el valor seleccionado en el ComboBox.
+     * Dependiendo de la opción seleccionada (Olimpiadas, Deportistas, Equipos, Eventos, Deportes o Participaciones),
+     * carga los datos correspondientes en la tabla.
+     *
+     * @param event El evento que se genera cuando se activa la acción (por ejemplo, un clic de botón).
+     */
     public void actualizarTabla(ActionEvent event) {
         // Cargar el ResourceBundle para acceder a los mensajes
         String idioma = Propiedades.getValor("language");
@@ -440,7 +480,10 @@ public class OlimpiadasControler {
             cargarParticipaciones();
         }
     }
-
+    /**
+     * Carga los datos en la tabla para mostrar las participaciones, que incluyen el nombre del deportista,
+     * el nombre del evento, el nombre del equipo y la medalla obtenida (si tiene).
+     */
     private void cargarParticipaciones() {
         if (tablaVista.getColumns().isEmpty()) {
             // Columna para el nombre del deportista
@@ -471,7 +514,10 @@ public class OlimpiadasControler {
         tablaVista.setItems(lstEntera);
     }
 
-
+    /**
+     * Carga los datos en la tabla para mostrar las olimpiadas, que incluyen el nombre, el año y la ciudad
+     * en la que se celebró cada olimpiada.
+     */
     private void cargarOlimpiadas() {
         if (tablaVista.getColumns().isEmpty()) {
             TableColumn<Olimpiada, String> colNombre = new TableColumn<>(resources.getString("name"));
@@ -488,7 +534,9 @@ public class OlimpiadasControler {
         tablaVista.setItems(lstEntera);
     }
 
-
+    /**
+     * Carga los datos en la tabla para mostrar los deportistas, que incluyen el nombre y el sexo de cada deportista.
+     */
     private void cargarDeportistas() {
         if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Deportista, String> colNombre = new TableColumn<>(resources.getString("name"));
@@ -501,7 +549,10 @@ public class OlimpiadasControler {
         lstEntera.setAll(DaoDeportista.cargarListado());
         tablaVista.setItems(lstEntera);
     }
-
+    /**
+     * Carga los datos en la tabla para mostrar los equipos, que incluyen el nombre y las iniciales del país
+     * de cada equipo.
+     */
     private void cargarEquipos() {
         if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Equipo, String> colNombre = new TableColumn<>(resources.getString("name"));
@@ -515,7 +566,10 @@ public class OlimpiadasControler {
         tablaVista.setItems(lstEntera);
     }
 
-
+    /**
+     * Carga los datos en la tabla para mostrar los eventos, que incluyen el nombre del evento, el nombre de la olimpiada
+     * asociada y el deporte relacionado con el evento.
+     */
     private void cargarEventos() {
         if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Evento, String> colNombre = new TableColumn<>(resources.getString("name"));
@@ -532,7 +586,9 @@ public class OlimpiadasControler {
         tablaVista.setItems(lstEntera);
     }
 
-
+    /**
+     * Carga los datos en la tabla para mostrar los deportes, que incluyen el nombre de cada deporte.
+     */
     private void cargarDeportes() {
         if (tablaVista.getColumns().isEmpty()) {
         TableColumn<Deporte, String> colNombre = new TableColumn<>(resources.getString("name"));
@@ -543,11 +599,21 @@ public class OlimpiadasControler {
         tablaVista.setItems(lstEntera);
     }
 
-
+    /**
+     * Cambia el idioma de la aplicación a inglés.
+     * Este método se ejecuta cuando se selecciona la opción de cambiar a inglés.
+     *
+     * @param actionEvent El evento que se genera cuando se activa la acción (por ejemplo, un clic de botón).
+     */
     public void cambiarIngles(ActionEvent actionEvent) {
         cambiarIdioma("en");
     }
-
+    /**
+     * Cambia el idioma de la aplicación a español.
+     * Este método se ejecuta cuando se selecciona la opción de cambiar a español.
+     *
+     * @param actionEvent El evento que se genera cuando se activa la acción (por ejemplo, un clic de botón).
+     */
     public void cambiarEsp(ActionEvent actionEvent) {
         cambiarIdioma("es");
     }
@@ -602,7 +668,12 @@ public class OlimpiadasControler {
     }
 
 
-
+    /**
+     * Maneja la acción de añadir una nueva entidad dependiendo de la selección del ComboBox.
+     * Abre una ventana modal para añadir información relacionada con Olimpiadas, Deportistas, Equipos, Eventos, Deportes o Participaciones.
+     *
+     * @param event El evento generado por la acción de añadir (por ejemplo, un clic en un botón).
+     */
     @FXML
     void aniadir(ActionEvent event) {
         String seleccion = comboBoxDatos.getSelectionModel().getSelectedItem();
@@ -782,6 +853,11 @@ public class OlimpiadasControler {
             }
         }
     }
+    /**
+     * Muestra una alerta con los mensajes proporcionados.
+     *
+     * @param mensajes Una lista de mensajes que se mostrarán en la alerta.
+     */
     private void alerta(ArrayList<String> mensajes) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(resources.getString("advert"));
@@ -795,7 +871,11 @@ public class OlimpiadasControler {
         alert.setContentText(contenido.toString().trim());
         alert.showAndWait();
     }
-
+    /**
+     * Muestra una alerta de confirmación con el mensaje proporcionado.
+     *
+     * @param mensajes Mensaje o lista de mensajes que se mostrarán en la alerta.
+     */
     public void confirmacion(String mensajes) {
         String contenido = String.join("\n", mensajes);
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);

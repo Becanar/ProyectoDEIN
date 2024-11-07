@@ -15,6 +15,13 @@ import java.sql.SQLException;
 
 public class DaoParticipacion {
 
+    /**
+     * Obtiene una participación de la base de datos dado el ID de un deportista y el ID de un evento.
+     *
+     * @param idDeportista El ID del deportista.
+     * @param idEvento El ID del evento.
+     * @return Un objeto Participacion correspondiente a la búsqueda, o null si no se encuentra.
+     */
     public static Participacion getParticipacion(int idDeportista, int idEvento) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -58,7 +65,11 @@ public class DaoParticipacion {
         return participacion;  // Retorna la participación encontrada o null si no existe
     }
 
-
+    /**
+     * Carga todas las participaciones de la base de datos.
+     *
+     * @return Una lista observable de todas las participaciones.
+     */
     public static ObservableList<Participacion> cargarListado() {
         ConectorDB connection;
         ObservableList<Participacion> participacions = FXCollections.observableArrayList();
@@ -89,6 +100,13 @@ public class DaoParticipacion {
         return participacions;
     }
 
+    /**
+     * Modifica los datos de una participación en la base de datos.
+     *
+     * @param participacion La participación original a modificar.
+     * @param participacionNuevo La nueva participación con los valores actualizados.
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
     public static boolean modificar(Participacion participacion, Participacion participacionNuevo) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -116,6 +134,12 @@ public class DaoParticipacion {
         }
     }
 
+    /**
+     * Inserta una nueva participación en la base de datos.
+     *
+     * @param participacion La participación a insertar.
+     * @return true si la inserción fue exitosa, false en caso contrario.
+     */
     public static boolean insertar(Participacion participacion) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -139,6 +163,12 @@ public class DaoParticipacion {
         }
     }
 
+    /**
+     * Elimina una participación de la base de datos.
+     *
+     * @param participacion La participación a eliminar.
+     * @return true si la eliminación fue exitosa, false en caso contrario.
+     */
     public static boolean eliminar(Participacion participacion) {
         ConectorDB connection;
         PreparedStatement pstmt;

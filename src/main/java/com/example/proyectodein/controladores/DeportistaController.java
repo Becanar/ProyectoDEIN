@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class DeportistaController implements Initializable {
+
     private Deportista deportista;
     private Blob imagen;
 
@@ -52,10 +53,18 @@ public class DeportistaController implements Initializable {
     @FXML
     private ResourceBundle resources;
 
+    /**
+     * Constructor para crear un nuevo deportista o editar uno existente.
+     *
+     * @param deportista El deportista a editar (si es nulo, se crea un nuevo deportista).
+     */
     public DeportistaController(Deportista deportista) {
         this.deportista = deportista;
     }
 
+    /**
+     * Constructor vacío para crear un nuevo deportista.
+     */
     public DeportistaController() {
         this.deportista = null;
     }
@@ -64,7 +73,9 @@ public class DeportistaController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resources = resourceBundle;
         this.imagen = null;
+
         if (deportista != null) {
+            // Rellenar los campos con los datos del deportista existente
             txtNombre.setText(deportista.getNombre());
             if (deportista.getSexo() == 'F') {
                 rbFemale.setSelected(true);
@@ -75,6 +86,8 @@ public class DeportistaController implements Initializable {
             }
             txtPeso.setText(deportista.getPeso() + "");
             txtAltura.setText(deportista.getAltura() + "");
+
+            // Mostrar la foto si existe
             if (deportista.getFoto() != null) {
                 this.imagen = deportista.getFoto();
                 try {
@@ -88,6 +101,11 @@ public class DeportistaController implements Initializable {
         }
     }
 
+    /**
+     * Método para borrar la foto del deportista.
+     *
+     * @param event El evento de acción asociado al botón de borrar foto.
+     */
     @FXML
     void borrarFoto(ActionEvent event) {
         imagen = null;
@@ -95,12 +113,23 @@ public class DeportistaController implements Initializable {
         btnFotoBorrar.setDisable(true);
     }
 
+    /**
+     * Método para cancelar la operación y cerrar la ventana.
+     *
+     * @param event El evento de acción asociado al botón de cancelar.
+     */
     @FXML
     void cancelar(ActionEvent event) {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Método para guardar los datos del deportista.
+     * Si se está editando, actualiza los datos, si no, crea un nuevo deportista.
+     *
+     * @param event El evento de acción asociado al botón de guardar.
+     */
     @FXML
     void guardar(ActionEvent event) {
         ArrayList<String> errores = validar();
@@ -119,6 +148,7 @@ public class DeportistaController implements Initializable {
                 nuevo.setAltura(Integer.parseInt(txtAltura.getText()));
                 nuevo.setFoto(this.imagen);
                 if (this.deportista == null) {
+                    // Si es un nuevo deportista, se inserta en la base de datos
                     int id = DaoDeportista.insertar(nuevo);
                     if (id == -1) {
                         ArrayList<String> failMessages = new ArrayList<>();
@@ -132,6 +162,7 @@ public class DeportistaController implements Initializable {
                         stage.close();
                     }
                 } else {
+                    // Si se está editando, se actualiza en la base de datos
                     if (DaoDeportista.modificar(this.deportista, nuevo)) {
                         ArrayList<String> successMessages = new ArrayList<>();
                         successMessages.add(resources.getString("update.athlete"));
@@ -152,6 +183,11 @@ public class DeportistaController implements Initializable {
         }
     }
 
+    /**
+     * Valida los datos ingresados del deportista.
+     *
+     * @return Una lista de errores de validación (si los hay).
+     */
     private ArrayList<String> validar() {
         ArrayList<String> errores = new ArrayList<>();
         if (txtNombre.getText().isEmpty()) {
@@ -178,6 +214,11 @@ public class DeportistaController implements Initializable {
         return errores;
     }
 
+    /**
+     * Método para seleccionar y cargar una foto para el deportista.
+     *
+     * @param event El evento de acción asociado al botón de seleccionar foto.
+     */
     @FXML
     void seleccionImagen(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -207,6 +248,11 @@ public class DeportistaController implements Initializable {
         }
     }
 
+    /**
+     * Muestra una alerta con los mensajes de error proporcionados.
+     *
+     * @param textos Los textos de error a mostrar en la alerta.
+     */
     public void alerta(ArrayList<String> textos) {
         String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.ERROR);
@@ -216,6 +262,11 @@ public class DeportistaController implements Initializable {
         alerta.showAndWait();
     }
 
+    /**
+     * Muestra una alerta de confirmación con los mensajes proporcionados.
+     *
+     * @param mensajes Los mensajes de confirmación a mostrar.
+     */
     public void confirmacion(ArrayList<String> mensajes) {
         String contenido = String.join("\n", mensajes);
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);

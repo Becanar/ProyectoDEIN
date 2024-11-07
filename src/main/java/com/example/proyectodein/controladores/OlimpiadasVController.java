@@ -37,16 +37,29 @@ public class OlimpiadasVController implements Initializable {
 
     private ResourceBundle resources;
 
-    // Constructor vacío para la creación de una nueva olimpiada
+    /**
+     * Constructor vacío para la creación de una nueva olimpiada.
+     */
     public OlimpiadasVController() {
         this.olimpiada = null;
     }
 
-    // Constructor para la edición de una olimpiada existente
+    /**
+     * Constructor para la edición de una olimpiada existente.
+     *
+     * @param olimpiada La olimpiada a editar.
+     */
     public OlimpiadasVController(Olimpiada olimpiada) {
         this.olimpiada = olimpiada;
     }
 
+    /**
+     * Inicializa la vista. Si la olimpiada es nula, se prepara la vista para crear una nueva olimpiada.
+     * Si no, carga los datos de la olimpiada para su edición.
+     *
+     * @param url La URL de la vista.
+     * @param resourceBundle El recurso de internacionalización.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resources = resourceBundle;
@@ -80,12 +93,25 @@ public class OlimpiadasVController implements Initializable {
         }
     }
 
+    /**
+     * Método que se ejecuta al hacer clic en el botón "Cancelar".
+     * Cierra la ventana sin realizar cambios.
+     *
+     * @param event El evento de acción asociado al botón de cancelar.
+     */
     @FXML
     void cancelar(ActionEvent event) {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Método que se ejecuta al hacer clic en el botón "Eliminar".
+     * Muestra una confirmación para eliminar la olimpiada.
+     * Si se confirma, elimina la olimpiada de la base de datos.
+     *
+     * @param event El evento de acción asociado al botón de eliminar.
+     */
     @FXML
     void eliminar(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -105,6 +131,13 @@ public class OlimpiadasVController implements Initializable {
         }
     }
 
+    /**
+     * Método que se ejecuta al hacer clic en el botón "Guardar".
+     * Valida los campos y guarda la olimpiada en la base de datos.
+     * Si la olimpiada ya existe, muestra un mensaje de duplicado.
+     *
+     * @param event El evento de acción asociado al botón de guardar.
+     */
     @FXML
     void guardar(ActionEvent event) {
         ArrayList<String> errores = new ArrayList<>();
@@ -163,7 +196,11 @@ public class OlimpiadasVController implements Initializable {
         }
     }
 
-    // Método de validación de los campos
+    /**
+     * Método de validación de los campos.
+     *
+     * @return Un mensaje de error si los campos son inválidos, de lo contrario una cadena vacía.
+     */
     public String validar() {
         String error = "";
         if (txtNombre.getText().isEmpty()) {
@@ -184,7 +221,11 @@ public class OlimpiadasVController implements Initializable {
         return error;
     }
 
-    // Método para mostrar alertas con múltiples errores
+    /**
+     * Método para mostrar alertas con múltiples errores.
+     *
+     * @param mensajes Los mensajes de error a mostrar en la alerta.
+     */
     public void alerta(ArrayList<String> mensajes) {
         StringBuilder texto = new StringBuilder();
         for (String mensaje : mensajes) {
@@ -198,7 +239,11 @@ public class OlimpiadasVController implements Initializable {
         alerta.showAndWait();
     }
 
-    // Método para mostrar mensaje de confirmación
+    /**
+     * Método para mostrar un mensaje de confirmación.
+     *
+     * @param texto El mensaje de confirmación a mostrar.
+     */
     public void confirmacion(String texto) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);

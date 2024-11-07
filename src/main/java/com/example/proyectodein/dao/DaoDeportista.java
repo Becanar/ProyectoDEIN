@@ -11,8 +11,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 
+/**
+ * La clase DaoDeportista proporciona métodos para interactuar con la base de datos
+ * y realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los objetos Deportista.
+ */
 public class DaoDeportista {
 
+    /**
+     * Obtiene un deportista de la base de datos mediante su ID.
+     *
+     * @param id el ID del deportista a buscar
+     * @return un objeto Deportista si se encuentra en la base de datos, o null si no se encuentra
+     */
     public static Deportista getDeportista(int id) {
         ConectorDB connection;
         Deportista deportista = null;
@@ -41,7 +51,14 @@ public class DaoDeportista {
         return deportista;
     }
 
-    public static Deportista getDeportista(String str,char sx) {
+    /**
+     * Obtiene un deportista de la base de datos mediante su nombre y sexo.
+     *
+     * @param str el nombre del deportista
+     * @param sx  el sexo del deportista
+     * @return un objeto Deportista si se encuentra en la base de datos, o null si no se encuentra
+     */
+    public static Deportista getDeportista(String str, char sx) {
         ConectorDB connection;
         Deportista deportista = null;
         try {
@@ -70,7 +87,14 @@ public class DaoDeportista {
         return deportista;
     }
 
-
+    /**
+     * Convierte un archivo de tipo File a un objeto Blob para ser almacenado en la base de datos.
+     *
+     * @param file el archivo a convertir a Blob
+     * @return el Blob generado a partir del archivo
+     * @throws SQLException en caso de errores al trabajar con la base de datos
+     * @throws IOException  en caso de errores al leer el archivo
+     */
     public static Blob convertFileToBlob(File file) throws SQLException, IOException {
         ConectorDB connection = new ConectorDB();
         // Open a connection to the database
@@ -92,6 +116,11 @@ public class DaoDeportista {
         }
     }
 
+    /**
+     * Carga una lista de todos los deportistas almacenados en la base de datos.
+     *
+     * @return una lista observable con los deportistas
+     */
     public static ObservableList<Deportista> cargarListado() {
         ConectorDB connection;
         ObservableList<Deportista> deportistas = FXCollections.observableArrayList();
@@ -120,6 +149,13 @@ public class DaoDeportista {
         return deportistas;
     }
 
+    /**
+     * Verifica si un deportista puede ser eliminado de la base de datos.
+     * Un deportista no puede ser eliminado si está participando en algún evento.
+     *
+     * @param deportista el deportista a verificar
+     * @return true si el deportista puede ser eliminado (no tiene participaciones), false en caso contrario
+     */
     public static boolean esEliminable(Deportista deportista) {
         ConectorDB connection;
         try {
@@ -144,6 +180,13 @@ public class DaoDeportista {
         return false;
     }
 
+    /**
+     * Actualiza la información de un deportista en la base de datos.
+     *
+     * @param deportista     el deportista a actualizar
+     * @param deportistaNuevo los nuevos datos del deportista
+     * @return true si la actualización fue exitosa, false si ocurrió un error
+     */
     public static boolean modificar(Deportista deportista, Deportista deportistaNuevo) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -170,7 +213,13 @@ public class DaoDeportista {
         }
     }
 
-     public  static int insertar(Deportista deportista) {
+    /**
+     * Inserta un nuevo deportista en la base de datos.
+     *
+     * @param deportista el deportista a insertar
+     * @return el ID generado para el nuevo deportista, o -1 si la inserción falló
+     */
+    public static int insertar(Deportista deportista) {
         ConectorDB connection;
         PreparedStatement pstmt;
         try {
@@ -202,9 +251,14 @@ public class DaoDeportista {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-     }
+    }
 
-
+    /**
+     * Elimina un deportista de la base de datos.
+     *
+     * @param deportista el deportista a eliminar
+     * @return true si la eliminación fue exitosa, false en caso contrario
+     */
     public static boolean eliminar(Deportista deportista) {
         ConectorDB connection;
         PreparedStatement pstmt;

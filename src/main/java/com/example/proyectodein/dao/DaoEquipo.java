@@ -10,8 +10,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * La clase DaoEquipo proporciona métodos para interactuar con la base de datos
+ * y realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los objetos Equipo.
+ */
 public class DaoEquipo {
 
+    /**
+     * Obtiene un equipo de la base de datos mediante su ID.
+     *
+     * @param id el ID del equipo a buscar
+     * @return un objeto Equipo si se encuentra en la base de datos, o null si no se encuentra
+     */
     public static Equipo getEquipo(int id) {
         ConectorDB connection;
         Equipo equipo = null;
@@ -37,7 +47,14 @@ public class DaoEquipo {
         return equipo;
     }
 
-    public static Equipo getEquipo(String str,String str2) {
+    /**
+     * Obtiene un equipo de la base de datos mediante su nombre y sus iniciales.
+     *
+     * @param str el nombre del equipo
+     * @param str2 las iniciales del equipo
+     * @return un objeto Equipo si se encuentra en la base de datos, o null si no se encuentra
+     */
+    public static Equipo getEquipo(String str, String str2) {
         ConectorDB connection;
         Equipo equipo = null;
         try {
@@ -63,6 +80,11 @@ public class DaoEquipo {
         return equipo;
     }
 
+    /**
+     * Carga una lista de todos los equipos almacenados en la base de datos.
+     *
+     * @return una lista observable con los equipos
+     */
     public static ObservableList<Equipo> cargarListado() {
         ConectorDB connection;
         ObservableList<Equipo> equipos = FXCollections.observableArrayList();
@@ -88,6 +110,13 @@ public class DaoEquipo {
         return equipos;
     }
 
+    /**
+     * Verifica si un equipo puede ser eliminado de la base de datos.
+     * Un equipo no puede ser eliminado si está participando en algún evento.
+     *
+     * @param equipo el equipo a verificar
+     * @return true si el equipo puede ser eliminado (no tiene participaciones), false en caso contrario
+     */
     public static boolean esEliminable(Equipo equipo) {
         ConectorDB connection;
         try {
@@ -100,7 +129,7 @@ public class DaoEquipo {
                 int cont = rs.getInt("cont");
                 rs.close();
                 connection.closeConexion();
-                return (cont==0);
+                return (cont == 0);
             }
             rs.close();
             connection.closeConexion();
@@ -112,6 +141,13 @@ public class DaoEquipo {
         return false;
     }
 
+    /**
+     * Actualiza la información de un equipo en la base de datos.
+     *
+     * @param equipo el equipo a actualizar
+     * @param equipoNuevo los nuevos datos del equipo
+     * @return true si la actualización fue exitosa, false si ocurrió un error
+     */
     public static boolean modificar(Equipo equipo, Equipo equipoNuevo) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -135,8 +171,13 @@ public class DaoEquipo {
         }
     }
 
-
-    public  static int insertar(Equipo equipo) {
+    /**
+     * Inserta un nuevo equipo en la base de datos.
+     *
+     * @param equipo el equipo a insertar
+     * @return el ID generado para el nuevo equipo, o -1 si la inserción falló
+     */
+    public static int insertar(Equipo equipo) {
         ConectorDB connection;
         PreparedStatement pstmt;
         try {
@@ -167,7 +208,12 @@ public class DaoEquipo {
         }
     }
 
-
+    /**
+     * Elimina un equipo de la base de datos.
+     *
+     * @param equipo el equipo a eliminar
+     * @return true si la eliminación fue exitosa, false en caso contrario
+     */
     public static boolean eliminar(Equipo equipo) {
         ConectorDB connection;
         PreparedStatement pstmt;

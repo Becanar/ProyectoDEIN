@@ -27,12 +27,18 @@ public class DeportesController implements Initializable {
 
     private ResourceBundle resources;
 
-    // Constructor vacío para crear un nuevo deporte
+    /**
+     * Constructor vacío para crear un nuevo deporte.
+     */
     public DeportesController() {
         this.deporte = null; // No hay un deporte a editar, por lo que se creará uno nuevo.
     }
 
-    // Constructor para editar un deporte existente
+    /**
+     * Constructor para editar un deporte existente.
+     *
+     * @param deporte El deporte a editar.
+     */
     public DeportesController(Deporte deporte) {
         this.deporte = deporte; // Se asigna el deporte que se va a editar.
     }
@@ -57,6 +63,11 @@ public class DeportesController implements Initializable {
         }
     }
 
+    /**
+     * Método para cerrar la ventana sin guardar cambios.
+     *
+     * @param event El evento de acción (click) asociado al botón de cancelar.
+     */
     @FXML
     void cancelar(ActionEvent event) {
         // Cerrar la ventana sin guardar cambios
@@ -64,6 +75,11 @@ public class DeportesController implements Initializable {
         stage.close();
     }
 
+    /**
+     * Método para eliminar un deporte de la base de datos con confirmación.
+     *
+     * @param event El evento de acción (click) asociado al botón de eliminar.
+     */
     @FXML
     void eliminar(ActionEvent event) {
         // Mostrar una confirmación antes de eliminar el deporte
@@ -88,6 +104,11 @@ public class DeportesController implements Initializable {
         }
     }
 
+    /**
+     * Método para guardar los cambios realizados en el deporte.
+     *
+     * @param event El evento de acción (click) asociado al botón de guardar.
+     */
     @FXML
     void guardar(ActionEvent event) {
         // Validar el nombre del deporte antes de guardar
@@ -136,6 +157,11 @@ public class DeportesController implements Initializable {
         }
     }
 
+    /**
+     * Muestra una alerta de tipo error con los mensajes proporcionados.
+     *
+     * @param textos Lista de textos a mostrar en la alerta.
+     */
     public void alerta(ArrayList<String> textos) {
         String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.ERROR);
@@ -145,6 +171,11 @@ public class DeportesController implements Initializable {
         alerta.showAndWait();
     }
 
+    /**
+     * Muestra una alerta de confirmación con los mensajes proporcionados.
+     *
+     * @param textos Lista de textos a mostrar en la alerta.
+     */
     public void confirmacion(ArrayList<String> textos) {
         String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);

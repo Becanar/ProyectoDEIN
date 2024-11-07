@@ -10,8 +10,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase de acceso a datos (DAO) para realizar operaciones CRUD sobre la entidad Deporte.
+ */
 public class DaoDeporte {
 
+    /**
+     * Obtiene un objeto Deporte a partir de su ID.
+     *
+     * @param id el ID del deporte que se desea obtener
+     * @return un objeto Deporte si se encuentra, o null si no existe
+     */
     public static Deporte getDeporte(int id) {
         ConectorDB connection;
         Deporte deporte = null;
@@ -24,7 +33,7 @@ public class DaoDeporte {
             if (rs.next()) {
                 int id_deporte = rs.getInt("id_deporte");
                 String nombre = rs.getString("nombre");
-                deporte = new Deporte(id_deporte,nombre);
+                deporte = new Deporte(id_deporte, nombre);
             }
             rs.close();
             connection.closeConexion();
@@ -34,6 +43,12 @@ public class DaoDeporte {
         return deporte;
     }
 
+    /**
+     * Obtiene un objeto Deporte a partir de su nombre.
+     *
+     * @param str el nombre del deporte que se desea obtener
+     * @return un objeto Deporte si se encuentra, o null si no existe
+     */
     public static Deporte getDeporte(String str) {
         ConectorDB connection;
         Deporte deporte = null;
@@ -46,7 +61,7 @@ public class DaoDeporte {
             if (rs.next()) {
                 int id_deporte = rs.getInt("id_deporte");
                 String nombre = rs.getString("nombre");
-                deporte = new Deporte(id_deporte,nombre);
+                deporte = new Deporte(id_deporte, nombre);
             }
             rs.close();
             connection.closeConexion();
@@ -56,10 +71,15 @@ public class DaoDeporte {
         return deporte;
     }
 
+    /**
+     * Carga una lista observable con todos los deportes almacenados en la base de datos.
+     *
+     * @return una lista observable de objetos Deporte
+     */
     public static ObservableList<Deporte> cargarListado() {
         ConectorDB connection;
         ObservableList<Deporte> deportes = FXCollections.observableArrayList();
-        try{
+        try {
             connection = new ConectorDB();
             String consulta = "SELECT id_deporte,nombre FROM Deporte";
             PreparedStatement pstmt = connection.getConnection().prepareStatement(consulta);
@@ -67,12 +87,12 @@ public class DaoDeporte {
             while (rs.next()) {
                 int id_deporte = rs.getInt("id_deporte");
                 String nombre = rs.getString("nombre");
-                Deporte deporte = new Deporte(id_deporte,nombre);
+                Deporte deporte = new Deporte(id_deporte, nombre);
                 deportes.add(deporte);
             }
             rs.close();
             connection.closeConexion();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -80,6 +100,13 @@ public class DaoDeporte {
         return deportes;
     }
 
+    /**
+     * Verifica si un deporte puede ser eliminado de la base de datos, comprobando si está
+     * asociado a algún evento.
+     *
+     * @param deporte el objeto Deporte que se desea verificar
+     * @return true si el deporte no está asociado a ningún evento, false en caso contrario
+     */
     public static boolean esEliminable(Deporte deporte) {
         ConectorDB connection;
         try {
@@ -92,7 +119,7 @@ public class DaoDeporte {
                 int cont = rs.getInt("cont");
                 rs.close();
                 connection.closeConexion();
-                return (cont==0);
+                return (cont == 0);
             }
             rs.close();
             connection.closeConexion();
@@ -104,6 +131,13 @@ public class DaoDeporte {
         return false;
     }
 
+    /**
+     * Modifica un deporte existente en la base de datos.
+     *
+     * @param deporte      el objeto Deporte existente que se desea modificar
+     * @param deporteNuevo el objeto Deporte que contiene los nuevos datos
+     * @return true si la modificación se realizó con éxito, false en caso contrario
+     */
     public static boolean modificar(Deporte deporte, Deporte deporteNuevo) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -126,7 +160,13 @@ public class DaoDeporte {
         }
     }
 
-    public  static int insertar(Deporte deporte) {
+    /**
+     * Inserta un nuevo deporte en la base de datos.
+     *
+     * @param deporte el objeto Deporte que se desea insertar
+     * @return el ID generado del nuevo deporte insertado, o -1 si hubo un error
+     */
+    public static int insertar(Deporte deporte) {
         ConectorDB connection;
         PreparedStatement pstmt;
         try {
@@ -156,6 +196,12 @@ public class DaoDeporte {
         }
     }
 
+    /**
+     * Elimina un deporte de la base de datos.
+     *
+     * @param deporte el objeto Deporte que se desea eliminar
+     * @return true si la eliminación se realizó con éxito, false en caso contrario
+     */
     public static boolean eliminar(Deporte deporte) {
         ConectorDB connection;
         PreparedStatement pstmt;

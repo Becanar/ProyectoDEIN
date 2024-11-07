@@ -29,12 +29,19 @@ public class EquiposController implements Initializable {
 
     private ResourceBundle resources;
 
-    // Constructor vacío para crear un nuevo equipo
+    /**
+     * Constructor vacío para crear un nuevo equipo.
+     * Este constructor se usa cuando no hay un equipo existente para editar.
+     */
     public EquiposController() {
         this.equipo = null; // No hay un equipo a editar, por lo que se creará uno nuevo.
     }
 
-    // Constructor para editar un equipo existente
+    /**
+     * Constructor para editar un equipo existente.
+     *
+     * @param equipo El equipo a editar.
+     */
     public EquiposController(Equipo equipo) {
         this.equipo = equipo; // Se asigna el equipo que se va a editar.
     }
@@ -61,6 +68,11 @@ public class EquiposController implements Initializable {
         }
     }
 
+    /**
+     * Método para cerrar la ventana sin guardar cambios.
+     *
+     * @param event El evento de acción asociado al botón de cancelar.
+     */
     @FXML
     void cancelar(ActionEvent event) {
         // Cerrar la ventana sin guardar cambios
@@ -68,6 +80,11 @@ public class EquiposController implements Initializable {
         stage.close();
     }
 
+    /**
+     * Método para eliminar un equipo después de mostrar una confirmación.
+     *
+     * @param event El evento de acción asociado al botón de eliminar.
+     */
     @FXML
     void eliminar(ActionEvent event) {
         // Mostrar una confirmación antes de eliminar el equipo
@@ -90,6 +107,12 @@ public class EquiposController implements Initializable {
         }
     }
 
+    /**
+     * Método para guardar los datos del equipo después de validar los campos.
+     * Si estamos editando, actualiza el equipo; si no, crea uno nuevo.
+     *
+     * @param event El evento de acción asociado al botón de guardar.
+     */
     @FXML
     void guardar(ActionEvent event) {
         // Validar los campos antes de guardar
@@ -143,6 +166,11 @@ public class EquiposController implements Initializable {
         }
     }
 
+    /**
+     * Muestra una alerta de error con los mensajes proporcionados.
+     *
+     * @param textos Los mensajes de error a mostrar en la alerta.
+     */
     public void alerta(ArrayList<String> textos) {
         // Mostrar un mensaje de error basado en una lista de textos
         String contenido = String.join("\n", textos);
@@ -153,6 +181,11 @@ public class EquiposController implements Initializable {
         alerta.showAndWait();
     }
 
+    /**
+     * Muestra una alerta de confirmación con el texto proporcionado.
+     *
+     * @param texto El mensaje de confirmación a mostrar.
+     */
     public void confirmacion(String texto) {
         // Mostrar un mensaje de confirmación
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);

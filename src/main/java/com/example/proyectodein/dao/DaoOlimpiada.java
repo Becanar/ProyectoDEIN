@@ -12,6 +12,12 @@ import java.sql.SQLException;
 
 public class DaoOlimpiada {
 
+    /**
+     * Obtiene una olimpiada de la base de datos dado su ID.
+     *
+     * @param id El ID de la olimpiada a buscar.
+     * @return La olimpiada correspondiente al ID, o null si no se encuentra.
+     */
     public static Olimpiada getOlimpiada(int id) {
         ConectorDB connection;
         Olimpiada olimpiada = null;
@@ -39,6 +45,12 @@ public class DaoOlimpiada {
         return olimpiada;
     }
 
+    /**
+     * Obtiene una olimpiada de la base de datos dado su nombre.
+     *
+     * @param str El nombre de la olimpiada.
+     * @return La olimpiada correspondiente al nombre, o null si no se encuentra.
+     */
     public static Olimpiada getOlimpiada(String str) {
         ConectorDB connection;
         Olimpiada olimpiada = null;
@@ -66,6 +78,11 @@ public class DaoOlimpiada {
         return olimpiada;
     }
 
+    /**
+     * Carga todas las olimpiadas de la base de datos.
+     *
+     * @return Una lista observable de todas las olimpiadas en la base de datos.
+     */
     public static ObservableList<Olimpiada> cargarListado() {
         ConectorDB connection;
         ObservableList<Olimpiada> olimpiadas = FXCollections.observableArrayList();
@@ -93,6 +110,13 @@ public class DaoOlimpiada {
         return olimpiadas;
     }
 
+    /**
+     * Verifica si una olimpiada es eliminable de la base de datos.
+     * Una olimpiada es eliminable si no tiene eventos asociados.
+     *
+     * @param olimpiada La olimpiada a verificar.
+     * @return true si la olimpiada es eliminable, false en caso contrario.
+     */
     public static boolean esEliminable(Olimpiada olimpiada) {
         ConectorDB connection;
         try {
@@ -117,6 +141,13 @@ public class DaoOlimpiada {
         return false;
     }
 
+    /**
+     * Modifica los detalles de una olimpiada en la base de datos.
+     *
+     * @param olimpiada La olimpiada a modificar.
+     * @param olimpiadaNuevo La nueva olimpiada con los valores actualizados.
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
     public static boolean modificar(Olimpiada olimpiada, Olimpiada olimpiadaNuevo) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -142,7 +173,12 @@ public class DaoOlimpiada {
         }
     }
 
-
+    /**
+     * Inserta una nueva olimpiada en la base de datos.
+     *
+     * @param olimpiada La olimpiada a insertar.
+     * @return El ID generado para la nueva olimpiada, o -1 si la inserción falla.
+     */
     public  static int insertar(Olimpiada olimpiada) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -176,6 +212,12 @@ public class DaoOlimpiada {
         }
     }
 
+    /**
+     * Elimina una olimpiada de la base de datos.
+     *
+     * @param olimpiada La olimpiada a eliminar.
+     * @return true si la eliminación fue exitosa, false en caso contrario.
+     */
     public static boolean eliminar(Olimpiada olimpiada) {
         ConectorDB connection;
         PreparedStatement pstmt;
@@ -196,7 +238,4 @@ public class DaoOlimpiada {
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

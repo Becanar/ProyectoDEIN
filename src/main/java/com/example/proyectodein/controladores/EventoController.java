@@ -23,21 +23,29 @@ public class EventoController implements Initializable {
     private Evento evento;
 
     @FXML // fx:id="lstDeporte"
-    private ListView<Deporte> lstDeporte; // Value injected by FXMLLoader
+    private ListView<Deporte> lstDeporte; // ListView para mostrar los deportes
 
     @FXML // fx:id="lstOlimpiada"
-    private ListView<Olimpiada> lstOlimpiada; // Value injected by FXMLLoader
+    private ListView<Olimpiada> lstOlimpiada; // ListView para mostrar las olimpiadas
 
     @FXML // fx:id="txtNombre"
-    private TextField txtNombre; // Value injected by FXMLLoader
+    private TextField txtNombre; // Campo de texto para ingresar el nombre del evento
 
     @FXML
-    private ResourceBundle resources; // ResourceBundle injected automatically by FXML loader
+    private ResourceBundle resources; // Recurso de cadenas para internacionalización
 
+    /**
+     * Constructor para crear o editar un evento.
+     *
+     * @param evento El evento que se está editando. Si es null, se crea un nuevo evento.
+     */
     public EventoController(Evento evento) {
         this.evento = evento;
     }
 
+    /**
+     * Constructor vacío para crear un nuevo evento.
+     */
     public EventoController() {
         this.evento = null;
     }
@@ -45,31 +53,49 @@ public class EventoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.resources = resourceBundle;
-        cargarListas();
+        cargarListas(); // Cargar las listas de olimpiadas y deportes
         if (this.evento != null) {
+            // Si se está editando un evento, se cargan sus datos
             txtNombre.setText(evento.getNombre());
             lstOlimpiada.getSelectionModel().select(evento.getIdOlimpiada());
             lstDeporte.getSelectionModel().select(evento.getIdDeporte());
         }
     }
 
+    /**
+     * Método para cargar las listas de olimpiadas y deportes desde la base de datos.
+     */
     public void cargarListas() {
         ObservableList<Olimpiada> olimpiadas = DaoOlimpiada.cargarListado();
-        lstOlimpiada.getItems().addAll(olimpiadas);
+        lstOlimpiada.getItems().addAll(olimpiadas); // Añadir las olimpiadas al ListView
         ObservableList<Deporte> deportes = DaoDeporte.cargarListado();
-        lstDeporte.getItems().addAll(deportes);
+        lstDeporte.getItems().addAll(deportes); // Añadir los deportes al ListView
     }
 
+    /**
+     * Método que se ejecuta al hacer clic en el botón "Cancelar".
+     * Cierra la ventana sin realizar cambios.
+     *
+     * @param event El evento de acción asociado al botón de cancelar.
+     */
     @FXML
     void cancelar(ActionEvent event) {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Método que se ejecuta al hacer clic en el botón "Guardar".
+     * Valida los datos y guarda el evento en la base de datos.
+     * Si el evento ya existe, muestra una alerta de duplicado.
+     *
+     * @param event El evento de acción asociado al botón de guardar.
+     */
     @FXML
     void guardar(ActionEvent event) {
         ArrayList<String> errores = new ArrayList<>();
 
+        // Validar los campos
         if (txtNombre.getText().isEmpty()) {
             errores.add(resources.getString("validate.event.name"));
         }
@@ -81,8 +107,10 @@ public class EventoController implements Initializable {
         }
 
         if (!errores.isEmpty()) {
-            alerta(errores);  // Pasamos el ArrayList de errores
+            // Si hay errores, se muestra una alerta
+            alerta(errores);
         } else {
+            // Crear un nuevo objeto Evento con los datos proporcionados
             Evento nuevo = new Evento();
             nuevo.setNombre(txtNombre.getText());
             nuevo.setIdOlimpiada(lstOlimpiada.getSelectionModel().getSelectedItem().getIdOlimpiada());
@@ -92,9 +120,10 @@ public class EventoController implements Initializable {
             if (DaoEvento.getEvento(nuevo.getNombre(), nuevo.getIdOlimpiada(), nuevo.getIdDeporte()) == null) {
                 // Si no existe, insertar o modificar según sea necesario
                 if (this.evento == null) {
+                    // Si no estamos editando, creamos un nuevo evento
                     int id = DaoEvento.insertar(nuevo);
                     if (id == -1) {
-                        // Mostrar mensaje de error al guardar
+                        // Si no se puede guardar, mostrar mensaje de error
                         errores.add(resources.getString("save.fail"));
                         alerta(errores);
                     } else {
@@ -103,12 +132,13 @@ public class EventoController implements Initializable {
                         stage.close();
                     }
                 } else {
+                    // Si estamos editando, modificamos el evento
                     if (DaoEvento.modificar(evento, nuevo)) {
                         confirmacion(resources.getString("update.events"));
                         Stage stage = (Stage) txtNombre.getScene().getWindow();
                         stage.close();
                     } else {
-                        // Si no se pudo modificar, mostrar mensaje de error
+                        // Si no se puede modificar, mostrar mensaje de error
                         errores.add(resources.getString("save.fail"));
                         alerta(errores);
                     }
@@ -121,7 +151,11 @@ public class EventoController implements Initializable {
         }
     }
 
-    // Método para mostrar alerta con múltiples errores (ArrayList)
+    /**
+     * Muestra una alerta con los errores proporcionados en un ArrayList.
+     *
+     * @param mensajes Los mensajes de error a mostrar en la alerta.
+     */
     public void alerta(ArrayList<String> mensajes) {
         // Unir los mensajes del ArrayList en un solo String para mostrarlos
         StringBuilder texto = new StringBuilder();
@@ -136,7 +170,11 @@ public class EventoController implements Initializable {
         alerta.showAndWait();
     }
 
-    // Método para mostrar mensaje de confirmación
+    /**
+     * Muestra un mensaje de confirmación con el texto proporcionado.
+     *
+     * @param texto El mensaje de confirmación a mostrar.
+     */
     public void confirmacion(String texto) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);

@@ -27,13 +27,32 @@ public abstract class Propiedades {
 	 * @throws RuntimeException si la clave no existe en las propiedades.
 	 */
 	public static String getValor(String clave) {
+		try (FileInputStream input = new FileInputStream("db.properties")) {
+			props.load(input); // Carga las propiedades desde el archivo
+		} catch (Exception e) {
+			e.printStackTrace(); // Manejo de excepciones durante la carga
+		}
 		String valor = props.getProperty(clave); // Recupera el valor correspondiente a la clave
 		if (valor != null) {
 			return valor; // Retorna el valor si se encuentra
 		}
 		throw new RuntimeException("El fichero de configuracion no existe"); // Lanza excepción si no se encuentra
 	}
-
+	/**
+	 * Actualiza la configuración del idioma en el archivo "db.properties".
+	 * <p>
+	 * Este método carga las propiedades existentes desde el archivo "db.properties",
+	 * cambia el valor asociado a la clave "language" al código de idioma especificado,
+	 * y luego guarda las propiedades modificadas de nuevo en el archivo.
+	 * </p>
+	 *
+	 * @param clave  No se usa en este método, reservado para uso futuro o para otras configuraciones.
+	 * @param cambio El nuevo código de idioma a establecer, como "en" para inglés o "es" para español.
+	 *
+	 * <p> Si el archivo "db.properties" no existe o ocurre un error durante la
+	 * lectura/escritura, se captura una excepción IOException y se imprime su traza.
+	 * </p>
+	 */
 	public static void setIdioma(String clave, String cambio) {
 		Properties properties = new Properties();
 
