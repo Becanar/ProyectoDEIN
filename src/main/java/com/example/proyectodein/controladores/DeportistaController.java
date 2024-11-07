@@ -1,6 +1,5 @@
 package com.example.proyectodein.controladores;
 
-
 import com.example.proyectodein.dao.DaoDeportista;
 import com.example.proyectodein.model.Deportista;
 import javafx.event.ActionEvent;
@@ -19,39 +18,39 @@ import java.io.InputStream;
 import java.net.URL;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-
 
 public class DeportistaController implements Initializable {
     private Deportista deportista;
     private Blob imagen;
 
     @FXML // fx:id="foto"
-    private ImageView foto; // Value injected by FXMLLoader
+    private ImageView foto;
 
     @FXML // fx:id="rbFemale"
-    private RadioButton rbFemale; // Value injected by FXMLLoader
+    private RadioButton rbFemale;
 
     @FXML // fx:id="rbMale"
-    private RadioButton rbMale; // Value injected by FXMLLoader
+    private RadioButton rbMale;
 
     @FXML // fx:id="tgSexo"
-    private ToggleGroup tgSexo; // Value injected by FXMLLoader
+    private ToggleGroup tgSexo;
 
     @FXML // fx:id="txtAltura"
-    private TextField txtAltura; // Value injected by FXMLLoader
+    private TextField txtAltura;
 
     @FXML // fx:id="txtNombre"
-    private TextField txtNombre; // Value injected by FXMLLoader
+    private TextField txtNombre;
 
     @FXML // fx:id="txtPeso"
-    private TextField txtPeso; // Value injected by FXMLLoader
+    private TextField txtPeso;
 
     @FXML // fx:id="btnFotoBorrar"
-    private Button btnFotoBorrar; // Value injected by FXMLLoader
+    private Button btnFotoBorrar;
 
     @FXML
-    private ResourceBundle resources; // ResourceBundle injected automatically by FXML loader
+    private ResourceBundle resources;
 
     public DeportistaController(Deportista deportista) {
         this.deportista = deportista;
@@ -77,7 +76,6 @@ public class DeportistaController implements Initializable {
             txtPeso.setText(deportista.getPeso() + "");
             txtAltura.setText(deportista.getAltura() + "");
             if (deportista.getFoto() != null) {
-                System.out.println("Has image");
                 this.imagen = deportista.getFoto();
                 try {
                     InputStream imagen = deportista.getFoto().getBinaryStream();
@@ -99,15 +97,15 @@ public class DeportistaController implements Initializable {
 
     @FXML
     void cancelar(ActionEvent event) {
-        Stage stage = (Stage)txtNombre.getScene().getWindow();
+        Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
     @FXML
     void guardar(ActionEvent event) {
-        String error = validar();
-        if (!error.isEmpty()) {
-            alerta(error);
+        ArrayList<String> errores = validar();
+        if (!errores.isEmpty()) {
+            alerta(errores);
         } else {
             Deportista nuevo = new Deportista();
             nuevo.setNombre(txtNombre.getText());
@@ -116,70 +114,83 @@ public class DeportistaController implements Initializable {
             } else {
                 nuevo.setSexo('M');
             }
-            if(DaoDeportista.getDeportista(nuevo.getNombre(),nuevo.getSexo())==null){
-            nuevo.setPeso(Integer.parseInt(txtPeso.getText()));
-            nuevo.setAltura(Integer.parseInt(txtAltura.getText()));
-            nuevo.setFoto(this.imagen);
-            if (this.deportista == null) {
-                int id = DaoDeportista.insertar(nuevo);
-                if (id == -1) {
-                    alerta(resources.getString("save.fail"));
+            if (DaoDeportista.getDeportista(nuevo.getNombre(), nuevo.getSexo()) == null) {
+                nuevo.setPeso(Integer.parseInt(txtPeso.getText()));
+                nuevo.setAltura(Integer.parseInt(txtAltura.getText()));
+                nuevo.setFoto(this.imagen);
+                if (this.deportista == null) {
+                    int id = DaoDeportista.insertar(nuevo);
+                    if (id == -1) {
+                        ArrayList<String> failMessages = new ArrayList<>();
+                        failMessages.add(resources.getString("save.fail"));
+                        alerta(failMessages);
+                    } else {
+                        ArrayList<String> successMessages = new ArrayList<>();
+                        successMessages.add(resources.getString("save.athlete"));
+                        confirmacion(successMessages);
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    }
                 } else {
-                    confirmacion(resources.getString("save.athlete"));
-                    Stage stage = (Stage)txtNombre.getScene().getWindow();
-                    stage.close();
+                    if (DaoDeportista.modificar(this.deportista, nuevo)) {
+                        ArrayList<String> successMessages = new ArrayList<>();
+                        successMessages.add(resources.getString("update.athlete"));
+                        confirmacion(successMessages);
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        ArrayList<String> failMessages = new ArrayList<>();
+                        failMessages.add(resources.getString("save.fail"));
+                        alerta(failMessages);
+                    }
                 }
             } else {
-                if (DaoDeportista.modificar(this.deportista,nuevo)) {
-                    confirmacion(resources.getString("update.athlete"));
-                    Stage stage = (Stage)txtNombre.getScene().getWindow();
-                    stage.close();
-                } else {
-                    alerta(resources.getString("save.fail"));
-                }
-            }}else {
-                alerta(resources.getString("save.fail"));
+                ArrayList<String> failMessages = new ArrayList<>();
+                failMessages.add(resources.getString("duplicate.athlete"));
+                alerta(failMessages);
             }
         }
     }
 
-    private String validar() {
-        String error = "";
+    private ArrayList<String> validar() {
+        ArrayList<String> errores = new ArrayList<>();
         if (txtNombre.getText().isEmpty()) {
-            error = resources.getString("validate.athlete.name") + "\n";
+            errores.add(resources.getString("validate.athlete.name"));
         }
         if (txtPeso.getText().isEmpty()) {
-            error += resources.getString("validate.athlete.weight") + "\n";
+            errores.add(resources.getString("validate.athlete.weight"));
         } else {
             try {
                 Integer.parseInt(txtPeso.getText());
             } catch (NumberFormatException e) {
-                error += resources.getString("validate.athlete.weight.num") + "\n";
+                errores.add(resources.getString("validate.athlete.weight.num"));
             }
         }
         if (txtAltura.getText().isEmpty()) {
-            error += resources.getString("validate.athlete.height") + "\n";
+            errores.add(resources.getString("validate.athlete.height"));
         } else {
             try {
                 Integer.parseInt(txtAltura.getText());
             } catch (NumberFormatException e) {
-                error += resources.getString("validate.athlete.height.num") + "\n";
+                errores.add(resources.getString("validate.athlete.height.num"));
             }
         }
-        return error;
+        return errores;
     }
 
     @FXML
     void seleccionImagen(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(resources.getString("athlete.photo.chooser"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files","*.jpg", "*.jpeg","*.png"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png"));
         fileChooser.setInitialDirectory(new File("."));
         File file = fileChooser.showOpenDialog(null);
         try {
             double kbs = (double) file.length() / 1024;
             if (kbs > 64) {
-                alerta(resources.getString("athlete.photo.chooser.size"));
+                ArrayList<String> failMessages = new ArrayList<>();
+                failMessages.add(resources.getString("athlete.photo.chooser.size"));
+                alerta(failMessages);
             } else {
                 InputStream imagen = new FileInputStream(file);
                 Blob blob = DaoDeportista.convertFileToBlob(file);
@@ -187,29 +198,30 @@ public class DeportistaController implements Initializable {
                 foto.setImage(new Image(imagen));
                 btnFotoBorrar.setDisable(false);
             }
-        } catch (IOException|NullPointerException e) {
-            //e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
             System.out.println("Imagen no seleccionada");
         } catch (SQLException e) {
-            e.printStackTrace();
-            alerta(resources.getString("athlete.photo.chooser.fail"));
+            ArrayList<String> failMessages = new ArrayList<>();
+            failMessages.add(resources.getString("athlete.photo.chooser.fail"));
+            alerta(failMessages);
         }
     }
 
-    public void alerta(String texto) {
+    public void alerta(ArrayList<String> textos) {
+        String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
-        alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("error.title"));
+        alerta.setContentText(contenido);
         alerta.showAndWait();
     }
 
-    public void confirmacion(String texto) {
+    public void confirmacion(ArrayList<String> mensajes) {
+        String contenido = String.join("\n", mensajes);
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
         alerta.setTitle("Info");
-        alerta.setContentText(texto);
+        alerta.setContentText(contenido);
         alerta.showAndWait();
     }
-
 }

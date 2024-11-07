@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -82,7 +83,9 @@ public class EquiposController implements Initializable {
                 Stage stage = (Stage) txtNombre.getScene().getWindow();
                 stage.close();
             } else {
-                alerta(resources.getString("delete.teams.fail"));
+                ArrayList<String> errores = new ArrayList<>();
+                errores.add(resources.getString("delete.teams.fail"));
+                alerta(errores);  // Ahora pasa un ArrayList<String>
             }
         }
     }
@@ -90,56 +93,63 @@ public class EquiposController implements Initializable {
     @FXML
     void guardar(ActionEvent event) {
         // Validar los campos antes de guardar
-        String error = "";
+        ArrayList<String> errores = new ArrayList<>();
+
         if (txtNombre.getText().isEmpty()) {
-            error = resources.getString("validate.teams.name") + "\n";
+            errores.add(resources.getString("validate.teams.name"));
         }
         if (txtIniciales.getText().isEmpty()) {
-            error +=  resources.getString("validate.teams.noc") + "\n";
+            errores.add(resources.getString("validate.teams.noc"));
         } else {
             if (txtIniciales.getText().length() > 3) {
-                error +=  resources.getString("validate.teams.noc.num") +  "\n";
+                errores.add(resources.getString("validate.teams.noc.num"));
             }
         }
-        if (!error.isEmpty()) {
-            alerta(error);
+
+        if (!errores.isEmpty()) {
+            alerta(errores);  // Ahora pasa un ArrayList<String>
         } else {
             // Crear un nuevo objeto equipo con los datos del formulario
             Equipo nuevo = new Equipo();
             nuevo.setNombre(txtNombre.getText());
             nuevo.setIniciales(txtIniciales.getText());
-            if(DaoEquipo.getEquipo(nuevo.getNombre(), nuevo.getIniciales())==null){
-            if (this.equipo == null) {
-                // Si no estamos editando un equipo, lo creamos
-                int id = DaoEquipo.insertar(nuevo);
-                if (id == -1) {
-                    alerta(resources.getString("save.fail"));
+            if (DaoEquipo.getEquipo(nuevo.getNombre(), nuevo.getIniciales()) == null) {
+                if (this.equipo == null) {
+                    // Si no estamos editando un equipo, lo creamos
+                    int id = DaoEquipo.insertar(nuevo);
+                    if (id == -1) {
+                        errores.add(resources.getString("save.fail"));
+                        alerta(errores);  // Pasamos el ArrayList con el mensaje de error
+                    } else {
+                        confirmacion(resources.getString("save.teams"));
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    }
                 } else {
-                    confirmacion(resources.getString("save.teams"));
-                    Stage stage = (Stage) txtNombre.getScene().getWindow();
-                    stage.close();
+                    // Si estamos editando un equipo, lo actualizamos
+                    if (DaoEquipo.modificar(equipo, nuevo)) {
+                        confirmacion(resources.getString("update.teams"));
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        errores.add(resources.getString("save.fail"));
+                        alerta(errores);  // Pasamos el ArrayList con el mensaje de error
+                    }
                 }
             } else {
-                // Si estamos editando un equipo, lo actualizamos
-                if (DaoEquipo.modificar(equipo, nuevo)) {
-                    confirmacion(resources.getString("update.teams"));
-                    Stage stage = (Stage) txtNombre.getScene().getWindow();
-                    stage.close();
-                } else {
-                    alerta(resources.getString("save.fail"));
-                }
-            }}else {
-                alerta(resources.getString("save.fail"));
+                errores.add(resources.getString("save.fail"));
+                alerta(errores);  // Pasamos el ArrayList con el mensaje de error
             }
         }
     }
 
-    public void alerta(String texto) {
-        // Mostrar un mensaje de error
+    public void alerta(ArrayList<String> textos) {
+        // Mostrar un mensaje de error basado en una lista de textos
+        String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
-        alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("error.title"));
+        alerta.setContentText(contenido);
         alerta.showAndWait();
     }
 

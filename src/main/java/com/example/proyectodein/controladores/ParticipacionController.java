@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ParticipacionController implements Initializable {
@@ -84,13 +85,20 @@ public class ParticipacionController implements Initializable {
 
     @FXML
     void guardar(ActionEvent event) {
-        String error = validar();
+        ArrayList<String> errores = new ArrayList<>();  // Usamos ArrayList para múltiples errores
+
+        String error = validar(); // Validar los campos
         if (!error.isEmpty()) {
-            alerta(error);
+            errores.add(error);  // Si hay error, lo agregamos al ArrayList
+        }
+
+        if (!errores.isEmpty()) {
+            alerta(errores);  // Pasamos el ArrayList de errores
         } else {
             Participacion nuevo = new Participacion();
             nuevo.setIdDeportista(lstDeportista.getSelectionModel().getSelectedItem().getIdDeportista());
             nuevo.setIdEvento(lstEvento.getSelectionModel().getSelectedItem().getIdEvento());
+
             if(DaoParticipacion.getParticipacion(nuevo.getIdDeportista(),nuevo.getIdEvento()) == null){
                 nuevo.setIdEquipo(lstEquipo.getSelectionModel().getSelectedItem().getIdEquipo());
                 nuevo.setEdad(Integer.parseInt(txtEdad.getText()));
@@ -103,7 +111,7 @@ public class ParticipacionController implements Initializable {
                         Stage stage = (Stage) txtEdad.getScene().getWindow();
                         stage.close();
                     } else {
-                        alerta(resources.getString("save.fail"));
+                        errores.add(resources.getString("save.fail"));
                     }
                 } else {
                     // Editar participación existente
@@ -112,14 +120,20 @@ public class ParticipacionController implements Initializable {
                         Stage stage = (Stage) txtEdad.getScene().getWindow();
                         stage.close();
                     } else {
-                        alerta(resources.getString("save.fail"));
+                        errores.add(resources.getString("save.fail"));
                     }
                 }
             } else {
-                alerta(resources.getString("save.fail"));
+                errores.add(resources.getString("duplicate.participacion"));
+            }
+
+            // Si hay errores de validación o al guardar, mostramos la alerta
+            if (!errores.isEmpty()) {
+                alerta(errores);
             }
         }
     }
+
 
     public String validar() {
         String error = "";
@@ -127,7 +141,7 @@ public class ParticipacionController implements Initializable {
             error = resources.getString("validate.participation.athlete") + "\n";
         }
         if (lstEvento.getSelectionModel().getSelectedItem() == null) {
-            error += resources.getString("validate.participation.event") + "\n";
+            error += resources.getString("validate.participation.evento") + "\n";
         }
         if (lstEquipo.getSelectionModel().getSelectedItem() == null) {
             error += resources.getString("validate.participation.team") + "\n";
@@ -151,18 +165,25 @@ public class ParticipacionController implements Initializable {
         return error;
     }
 
-    public void alerta(String texto) {
+    public void alerta(ArrayList<String> mensajes) {
+        StringBuilder texto = new StringBuilder();
+        // Recorrer el ArrayList y concatenar cada mensaje
+        for (String mensaje : mensajes) {
+            texto.append(mensaje).append("\n");
+        }
+
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
-        alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("info"));
+        alerta.setContentText(texto.toString()); // Mostrar todos los mensajes concatenados
         alerta.showAndWait();
     }
+
 
     public void confirmacion(String texto) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
-        alerta.setTitle("Info");
+        alerta.setTitle(resources.getString("info"));
         alerta.setContentText(texto);
         alerta.showAndWait();
     }

@@ -15,18 +15,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Tooltip?>
 
 <VBox fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyectodein.controladores.OlimpiadasControler">
    <children>
       <MenuBar fx:id="barraMenu" maxWidth="1.7976931348623157E308">
          <menus>
-            <Menu fx:id="menuAyuda" mnemonicParsing="false" text="Ayuda">
+            <Menu fx:id="menuAyuda" mnemonicParsing="false" text="%menuAyuda">
                <items>
-                  <Menu fx:id="menuIdioma" mnemonicParsing="false" text="Cambiar Idioma">
+                  <Menu fx:id="menuIdioma" mnemonicParsing="false" text="%menuIdioma">
                      <items>
-                        <MenuItem fx:id="menuEn" mnemonicParsing="false" onAction="#cambiarIngles" text="Inglés" />
-                        <MenuItem fx:id="menuEs" mnemonicParsing="false" onAction="#cambiarEsp" text="Español" />
-                        <MenuItem fx:id="menuEus" mnemonicParsing="false" onAction="#cambiarEus" text="Euskera" />
+                        <MenuItem fx:id="menuEn" mnemonicParsing="false" onAction="#cambiarIngles" text="%menuEn" />
+                        <MenuItem fx:id="menuEs" mnemonicParsing="false" onAction="#cambiarEsp" text="%menuEs"  />
+                        <MenuItem fx:id="menuEus" mnemonicParsing="false" onAction="#cambiarEus" text="%menuEus"  />
                      </items>
                   </Menu>
                </items>
@@ -40,7 +41,7 @@
                   <Image url="@../images/ol.png" />
                </image>
             </ImageView>
-            <Label fx:id="lblGestion" text="GESTIÓN DE OLIMPIADAS" textAlignment="CENTER">
+            <Label fx:id="lblGestion" text="%lblGestion" textAlignment="CENTER">
                <font>
                   <Font size="39.0" />
                </font>
@@ -66,14 +67,24 @@
                <HBox.margin>
                   <Insets left="5.0" />
                </HBox.margin>
+               <tooltip>
+                  <Tooltip text="%txtNombre.tooltip" />
+               </tooltip>
             </TextField>
             <HBox fx:id="panelHueco" prefHeight="100.0" prefWidth="200.0" />
-            <Label fx:id="lblCombo" prefHeight="16.0" prefWidth="153.0" text="Elige qué gestionar:" />
-            <ComboBox fx:id="comboBoxDatos" prefWidth="150.0" />
-            <Button fx:id="btAniadir" mnemonicParsing="false" onAction="#aniadir" text="Añadir">
+            <Label fx:id="lblCombo" prefHeight="16.0" prefWidth="153.0" text="%lblCombo" />
+            <ComboBox fx:id="comboBoxDatos" prefWidth="150.0">
+               <tooltip>
+                  <Tooltip text="%comboBoxDatos.tooltip" />
+               </tooltip>
+            </ComboBox>
+            <Button fx:id="btAniadir" mnemonicParsing="false" onAction="#aniadir" text="%btAniadir">
                <HBox.margin>
                   <Insets left="100.0" />
                </HBox.margin>
+               <tooltip>
+                  <Tooltip text="%btAniadir.tooltip" />
+               </tooltip>
             </Button>
          </children>
          <VBox.margin>
@@ -87,6 +98,9 @@
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
+         <tooltip>
+            <Tooltip text="%tablaVista.tooltip" />
+         </tooltip>
       </TableView>
    </children>
 </VBox>

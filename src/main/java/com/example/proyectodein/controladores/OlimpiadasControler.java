@@ -21,9 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class OlimpiadasControler {
@@ -50,16 +48,16 @@ public class OlimpiadasControler {
     @FXML
     private void initialize() {
         cargarDatosComboBox();
-        comboBoxDatos.setValue("Olimpiadas");
+        comboBoxDatos.setValue(resources.getString("olympics"));
         actualizarTabla(null);
         comboBoxDatos.setOnAction(this::actualizarTabla);
         ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem editItem = new MenuItem("Editar");
+        MenuItem editItem = new MenuItem(resources.getString("edit"));
         editItem.setOnAction(event -> editar(null));
 
 
-        MenuItem deleteItem = new MenuItem("Borrar");
+        MenuItem deleteItem = new MenuItem(resources.getString("delete"));
         deleteItem.setOnAction(event -> borrar(null));
 
         contextMenu.getItems().addAll(editItem, deleteItem);
@@ -105,72 +103,71 @@ public class OlimpiadasControler {
     }
 
 
-    private void infoR(Object o) {
-    }
-
     private void borrar(Object o) {
             Object seleccion = tablaVista.getSelectionModel().getSelectedItem();
             if (seleccion != null) {
                 String item = comboBoxDatos.getSelectionModel().getSelectedItem();
 
-                if (item.equals("Olimpiadas")) {
+                if (item.equals(resources.getString("olympics"))) {
                     // Olimpiada
                     Olimpiada olimpiada = (Olimpiada) seleccion;
                     if (DaoOlimpiada.esEliminable(olimpiada)) {
-                        mostrarConfirmacionYEliminar("Olimpiada", "¿Seguro que deseas eliminar esta olimpiada?",
+                        mostrarConfirmacionYEliminar(resources.getString("olympic"), resources.getString("confirm.delete.olympics"),
                                 () -> DaoOlimpiada.eliminar(olimpiada), this::cargarOlimpiadas);
                     } else {
-                        alerta("Esta olimpiada no puede ser eliminada porque está asociada a otros registros.");
+                        alerta(new ArrayList<>(Arrays.asList( resources.getString("no.delete.olympic"))));
                     }
 
-                } else if (item.equals("Deportistas")) {
+                } else if (item.equals(resources.getString("athletes"))) {
                     // Deportista
                     Deportista deportista = (Deportista) seleccion;
                     if (DaoDeportista.esEliminable(deportista)) {
-                        mostrarConfirmacionYEliminar("Deportista", "¿Seguro que deseas eliminar este deportista?",
+                        mostrarConfirmacionYEliminar(resources.getString("athlete"), resources.getString("confirm.delete.athlete"),
                                 () -> DaoDeportista.eliminar(deportista), this::cargarDeportistas);
                     } else {
-                        alerta("Este deportista no puede ser eliminado porque está asociado a otros registros.");
+
+                        alerta(new ArrayList<>(Arrays.asList( resources.getString("no.delete.athlete"))));
                     }
 
-                } else if (item.equals("Equipos")) {
+                } else if (item.equals(resources.getString("teams"))) {
                     // Equipo
                     Equipo equipo = (Equipo) seleccion;
                     if (DaoEquipo.esEliminable(equipo)) {
-                        mostrarConfirmacionYEliminar("Equipo", "¿Seguro que deseas eliminar este equipo?",
+                        mostrarConfirmacionYEliminar(resources.getString("team"), resources.getString("confirm.delete.team"),
                                 () -> DaoEquipo.eliminar(equipo), this::cargarEquipos);
                     } else {
-                        alerta("Este equipo no puede ser eliminado porque está asociado a otros registros.");
+                        alerta(new ArrayList<>(Arrays.asList( resources.getString("no.delete.team"))));
                     }
 
-                } else if (item.equals("Eventos")) {
+                } else if (item.equals(resources.getString("events"))) {
                     // Evento
                     Evento evento = (Evento) seleccion;
                     if (DaoEvento.esEliminable(evento)) {
-                        mostrarConfirmacionYEliminar("Evento", "¿Seguro que deseas eliminar este evento?",
+                        mostrarConfirmacionYEliminar(resources.getString("event"),  resources.getString("confirm.delete.event"),
                                 () -> DaoEvento.eliminar(evento), this::cargarEventos);
                     } else {
-                        alerta("Este evento no puede ser eliminado porque está asociado a otros registros.");
+                        alerta(new ArrayList<>(Arrays.asList( resources.getString("no.delete.event"))));
                     }
 
-                } else if (item.equals("Deportes")) {
+                } else if (item.equals(resources.getString("sports"))) {
                     // Deporte
                     Deporte deporte = (Deporte) seleccion;
                     if (DaoDeporte.esEliminable(deporte)) {
-                        mostrarConfirmacionYEliminar("Deporte", "¿Seguro que deseas eliminar este deporte?",
+                        mostrarConfirmacionYEliminar(resources.getString("sport"),  resources.getString("confirm.delete.sport"),
                                 () -> DaoDeporte.eliminar(deporte), this::cargarDeportes);
                     } else {
-                        alerta("Este deporte no puede ser eliminado porque está asociado a otros registros.");
+                        alerta(new ArrayList<>(Arrays.asList( resources.getString("no.delete.sport"))));
+
                     }
 
-                } else if (item.equals("Participaciones")) {
+                } else if (item.equals(resources.getString("participations"))) {
                     // Participación
                     Participacion participacion = (Participacion) seleccion;
-                    mostrarConfirmacionYEliminar("Participación", "¿Seguro que deseas eliminar esta participación?",
+                    mostrarConfirmacionYEliminar(resources.getString("participation"), resources.getString("confirm.delete.participation"),
                             () -> DaoParticipacion.eliminar(participacion), this::cargarParticipaciones);
                 }
             } else {
-                alerta("Por favor, selecciona un elemento para eliminar.");
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("select"))));
             }
 
 
@@ -181,22 +178,17 @@ public class OlimpiadasControler {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(tablaVista.getScene().getWindow());
         alert.setHeaderText(null);
-        alert.setTitle("Confirmación");
+        alert.setTitle(resources.getString("confirmation"));
         alert.setContentText(mensajeConfirmacion);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (eliminacion.get()) {  // Llamar a .get() en lugar de .run() para el Supplier
                 recargar.run();
-                confirmacion(tipoElemento + " eliminado exitosamente.");
+                confirmacion(""+tipoElemento + " eliminado exitosamente.");
             } else {
-                alerta("No se pudo eliminar el " + tipoElemento.toLowerCase() + ".");
+                alerta(new ArrayList<>(Arrays.asList("No se pudo eliminar el " + tipoElemento.toLowerCase() + ".")));
             }
         }
-    }
-
-
-    private void confirmacion(String s) {
-        System.out.println(s);
     }
 
 
@@ -207,7 +199,7 @@ public class OlimpiadasControler {
         if (seleccion != null) {
             String item = comboBoxDatos.getSelectionModel().getSelectedItem();
 
-            if (item.equals("Olimpiadas")) {
+            if (item.equals(resources.getString("olympics"))) {
                 // Olimpiada
                 Olimpiada olimpiada = (Olimpiada) seleccion;
                 try {
@@ -228,17 +220,17 @@ public class OlimpiadasControler {
                         System.out.println("error.img " + e.getMessage());
                     }
                     scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.olympics") + " - " + resources.getString("app.name"));
+                    stage.setTitle(resources.getString("olympics"));
                     stage.initOwner(ventana);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.showAndWait();
                     cargarOlimpiadas();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
-                    alerta(resources.getString("message.window_open"));
+                    alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
                 }
 
-            } else if (item.equals("Deportistas")) {
+            } else if (item.equals(resources.getString("athletes"))) {
                 // Deportista
                 Deportista deportista = (Deportista) seleccion;
                 try {
@@ -259,17 +251,17 @@ public class OlimpiadasControler {
                         System.out.println("error.img " + e.getMessage());
                     }
                     scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.athlete") + " - " + resources.getString("app.name"));
+                    stage.setTitle(resources.getString("athletes"));
                     stage.initOwner(ventana);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.showAndWait();
                     cargarDeportistas();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
-                    alerta(resources.getString("message.window_open"));
+                    alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
                 }
 
-            } else if (item.equals("Equipos")) {
+            } else if (item.equals(resources.getString("teams"))) {
                 // Equipo
                 Equipo equipo = (Equipo) seleccion;
                 try {
@@ -290,17 +282,17 @@ public class OlimpiadasControler {
                         System.out.println("error.img " + e.getMessage());
                     }
                     scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.teams") + " - " + resources.getString("app.name"));
+                    stage.setTitle(resources.getString("teams"));
                     stage.initOwner(ventana);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.showAndWait();
                     cargarEquipos();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
-                    alerta(resources.getString("message.window_open"));
+                    alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
                 }
 
-            } else if (item.equals("Eventos")) {
+            } else if (item.equals(resources.getString("events"))) {
                 // Evento
                 Evento evento = (Evento) seleccion;
                 try {
@@ -321,17 +313,17 @@ public class OlimpiadasControler {
                         System.out.println("error.img " + e.getMessage());
                     }
                     scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.event") + " - " + resources.getString("app.name"));
+                    stage.setTitle(resources.getString("events"));
                     stage.initOwner(ventana);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.showAndWait();
                     cargarEventos();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
-                    alerta(resources.getString("message.window_open"));
+                    alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
                 }
 
-            } else if (item.equals("Deportes")) {
+            } else if (item.equals(resources.getString("sports"))) {
                 // Deporte
                 Deporte deporte = (Deporte) seleccion;
                 try {
@@ -352,17 +344,17 @@ public class OlimpiadasControler {
                         System.out.println("error.img " + e.getMessage());
                     }
                     scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.sports") + " - " + resources.getString("app.name"));
+                    stage.setTitle(resources.getString("sports"));
                     stage.initOwner(ventana);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.showAndWait();
                     cargarDeportes();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
-                    alerta(resources.getString("message.window_open"));
+                    alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
                 }
 
-            } else if (item.equals("Participaciones")) {
+            } else if (item.equals(resources.getString("participations"))) {
                 // Participación
                 Participacion participacion = (Participacion) seleccion;
                 try {
@@ -383,19 +375,19 @@ public class OlimpiadasControler {
                         System.out.println("error.img " + e.getMessage());
                     }
                     scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                    stage.setTitle(resources.getString("window.edit") + " " + resources.getString("window.participation") + " - " + resources.getString("app.name"));
+                    stage.setTitle(resources.getString("participations"));
                     stage.initOwner(ventana);
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.showAndWait();
                     cargarParticipaciones();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
-                    alerta(resources.getString("message.window_open"));
+                    alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
                 }
 
             }
         } else {
-            alerta("Por favor, selecciona un elemento para editar.");
+            alerta(new ArrayList<>(Arrays.asList(resources.getString("select.ed"))));
         }
     }
 
@@ -403,54 +395,64 @@ public class OlimpiadasControler {
 
     private void cargarDatosComboBox() {
         ObservableList<String> opciones = FXCollections.observableArrayList(
-                "Olimpiadas", "Deportistas", "Equipos", "Eventos", "Deportes","Participaciones"
+                resources.getString("olympics"), resources.getString("athletes"), resources.getString("teams"), resources.getString("events"),resources.getString("sports"),resources.getString("participations")
         );
         comboBoxDatos.setItems(opciones);
     }
 
     public void actualizarTabla(ActionEvent event) {
+        // Cargar el ResourceBundle para acceder a los mensajes
+        String idioma = Propiedades.getValor("language");
+        ResourceBundle bundle = ResourceBundle.getBundle("/com/example/proyectodein/languages/lang", new Locale(idioma));
+
+        // Obtener el valor de la clave "participations" desde el archivo de recursos
+        String olimpiadas = resources.getString("olympics");
+        String deportistas = resources.getString("athletes");
+        String equipos = resources.getString("teams");
+        String eventos = resources.getString("events");
+        String deportes = resources.getString("sports");
+        String participaciones = resources.getString("participations");
+
+
+        // Obtener el valor seleccionado del ComboBox
         String seleccion = comboBoxDatos.getValue();
+
+        // Limpiar la tabla antes de actualizarla
         tablaVista.getItems().clear();
         tablaVista.getColumns().clear(); // Limpiar columnas antes de configurar nuevas
 
-        switch (seleccion) {
-            case "Olimpiadas":
-                cargarOlimpiadas();
-                break;
-            case "Deportistas":
-                cargarDeportistas();
-                break;
-            case "Equipos":
-                cargarEquipos();
-                break;
-            case "Eventos":
-                cargarEventos();
-                break;
-            case "Deportes":
-                cargarDeportes();
-                break;
-            case "Participaciones":
-                cargarParticipaciones();
-            default:
-                break;
+        // Usar if-else para comparar las opciones seleccionadas
+        if (olimpiadas.equals(seleccion)) {
+            cargarOlimpiadas();
+        } else if (deportistas.equals(seleccion)) {
+            cargarDeportistas();
+        } else if (equipos.equals(seleccion)) {
+            cargarEquipos();
+        } else if (eventos.equals(seleccion)) {
+            cargarEventos();
+        } else if (deportes.equals(seleccion)) {
+            cargarDeportes();
+        } else if (participaciones.equals(seleccion)) { // Comparar con la cadena obtenida del ResourceBundle
+            cargarParticipaciones();
         }
     }
+
     private void cargarParticipaciones() {
         if (tablaVista.getColumns().isEmpty()) {
             // Columna para el nombre del deportista
-            TableColumn<Participacion, String> colDeportista = new TableColumn<>("Deportista");
+            TableColumn<Participacion, String> colDeportista = new TableColumn<>(resources.getString("athlete"));
             colDeportista.setCellValueFactory(cellData -> new SimpleStringProperty(DaoDeportista.getDeportista(cellData.getValue().getIdDeportista()).getNombre()));
 
             // Columna para el nombre del evento
-            TableColumn<Participacion, String> colEvento = new TableColumn<>("Evento");
+            TableColumn<Participacion, String> colEvento = new TableColumn<>(resources.getString("event"));
             colEvento.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEvento.getEvento(cellData.getValue().getIdEvento()).getNombre()));
 
             // Columna para la posición
-            TableColumn<Participacion, String> colPosicion = new TableColumn<>("Equipo");
+            TableColumn<Participacion, String> colPosicion = new TableColumn<>(resources.getString("team"));
             colPosicion.setCellValueFactory(cellData -> new SimpleStringProperty(DaoEquipo.getEquipo(cellData.getValue().getIdEquipo()).getNombre()));
 
             // Columna para la medalla (si tiene)
-            TableColumn<Participacion, String> colMedalla = new TableColumn<>("Medalla");
+            TableColumn<Participacion, String> colMedalla = new TableColumn<>(resources.getString("medal"));
             colMedalla.setCellValueFactory(cellData -> {
                 String medalla = cellData.getValue().getMedalla();
                 return new SimpleStringProperty(medalla != null ? medalla : "NA");
@@ -468,13 +470,13 @@ public class OlimpiadasControler {
 
     private void cargarOlimpiadas() {
         if (tablaVista.getColumns().isEmpty()) {
-            TableColumn<Olimpiada, String> colNombre = new TableColumn<>("Nombre");
+            TableColumn<Olimpiada, String> colNombre = new TableColumn<>(resources.getString("name"));
             colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
-            TableColumn<Olimpiada, Integer> colAño = new TableColumn<>("Año");
+            TableColumn<Olimpiada, Integer> colAño = new TableColumn<>(resources.getString("year"));
             colAño.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getAnio()).asObject());
 
-            TableColumn<Olimpiada, String> colCiudad = new TableColumn<>("Ciudad");
+            TableColumn<Olimpiada, String> colCiudad = new TableColumn<>(resources.getString("city"));
             colCiudad.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCiudad()));
             tablaVista.getColumns().addAll(colNombre, colAño, colCiudad);
         }
@@ -485,10 +487,10 @@ public class OlimpiadasControler {
 
     private void cargarDeportistas() {
         if (tablaVista.getColumns().isEmpty()) {
-        TableColumn<Deportista, String> colNombre = new TableColumn<>("Nombre");
+        TableColumn<Deportista, String> colNombre = new TableColumn<>(resources.getString("name"));
         colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
-        TableColumn<Deportista, String> colSexo = new TableColumn<>("Sexo");
+        TableColumn<Deportista, String> colSexo = new TableColumn<>(resources.getString("sex"));
         colSexo.setCellValueFactory(cellData -> new SimpleStringProperty(""+cellData.getValue().getSexo()));
 
         tablaVista.getColumns().addAll(colNombre, colSexo);}
@@ -498,10 +500,10 @@ public class OlimpiadasControler {
 
     private void cargarEquipos() {
         if (tablaVista.getColumns().isEmpty()) {
-        TableColumn<Equipo, String> colNombre = new TableColumn<>("Nombre");
+        TableColumn<Equipo, String> colNombre = new TableColumn<>(resources.getString("name"));
         colNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
 
-        TableColumn<Equipo, String> colPais = new TableColumn<>("Siglas");
+        TableColumn<Equipo, String> colPais = new TableColumn<>(resources.getString("siglas"));
         colPais.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIniciales()));
 
         tablaVista.getColumns().addAll(colNombre, colPais);}
@@ -512,13 +514,13 @@ public class OlimpiadasControler {
 
     private void cargarEventos() {
         if (tablaVista.getColumns().isEmpty()) {
-        TableColumn<Evento, String> colNombre = new TableColumn<>("Nombre");
+        TableColumn<Evento, String> colNombre = new TableColumn<>(resources.getString("name"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-        TableColumn<Evento, String> colOlimpiada = new TableColumn<>("Olimpiada");
+        TableColumn<Evento, String> colOlimpiada = new TableColumn<>(resources.getString("olympics"));
         colOlimpiada.setCellValueFactory(cellData -> new SimpleStringProperty(DaoOlimpiada.getOlimpiada(cellData.getValue().getIdOlimpiada()).getNombre()));
 
-        TableColumn<Evento, String> colDeporte = new TableColumn<>("Deporte");
+        TableColumn<Evento, String> colDeporte = new TableColumn<>(resources.getString("sport"));
         colDeporte.setCellValueFactory(cellData -> new SimpleStringProperty(DaoDeporte.getDeporte(cellData.getValue().getIdDeporte()).getNombre()));
 
         tablaVista.getColumns().addAll(colNombre, colOlimpiada, colDeporte);}
@@ -529,7 +531,7 @@ public class OlimpiadasControler {
 
     private void cargarDeportes() {
         if (tablaVista.getColumns().isEmpty()) {
-        TableColumn<Deporte, String> colNombre = new TableColumn<>("Nombre");
+        TableColumn<Deporte, String> colNombre = new TableColumn<>(resources.getString("name"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
         tablaVista.getColumns().addAll(colNombre);}
@@ -553,8 +555,8 @@ public class OlimpiadasControler {
     @FXML
     void aniadir(ActionEvent event) {
         String seleccion = comboBoxDatos.getSelectionModel().getSelectedItem();
-
-        if (seleccion.equals("Olimpiadas")) {
+        System.out.println(seleccion);
+        if (seleccion.equals(resources.getString("olympics"))) {
 
             try {
                 Window ventana = tablaVista.getScene().getWindow();
@@ -574,16 +576,16 @@ public class OlimpiadasControler {
                     System.out.println("error.img " + e.getMessage());
                 }
                 scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.olympics") + " - " + resources.getString("app.name"));
+                stage.setTitle(resources.getString("olympics"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarOlimpiadas();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                alerta(resources.getString("message.window_open"));
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
             }
-        } else if (seleccion.equals("Deportistas")) {
+        } else if (seleccion.equals(resources.getString("athletes"))) {
             try {
                 Window ventana = tablaVista.getScene().getWindow();
                 String idioma = Propiedades.getValor("language");
@@ -602,16 +604,16 @@ public class OlimpiadasControler {
                     System.out.println("error.img " + e.getMessage());
                 }
                 scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.athlete") + " - " + resources.getString("app.name"));
+                stage.setTitle(resources.getString("athletes"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarDeportistas();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                alerta(resources.getString("message.window_open"));
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
             }
-        } else if (seleccion.equals("Equipos")) {
+        } else if (seleccion.equals(resources.getString("teams"))) {
             // Agregar nuevo Equipo
             try {
                 Window ventana = tablaVista.getScene().getWindow();
@@ -631,16 +633,16 @@ public class OlimpiadasControler {
                     System.out.println("error.img " + e.getMessage());
                 }
                 scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.teams") + " - " + resources.getString("app.name"));
+                stage.setTitle((resources.getString("teams")));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarEquipos();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                alerta(resources.getString("message.window_open"));
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
             }
-        } else if (seleccion.equals("Eventos")) {
+        } else if (seleccion.equals(resources.getString("events"))) {
             // Agregar nuevo Evento
             try {
                 Window ventana = tablaVista.getScene().getWindow();
@@ -660,16 +662,16 @@ public class OlimpiadasControler {
                     System.out.println("error.img " + e.getMessage());
                 }
                 scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.event") + " - " + resources.getString("app.name"));
+                stage.setTitle(resources.getString("events"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarEventos();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                alerta(resources.getString("message.window_open"));
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
             }
-        } else if (seleccion.equals("Deportes")) {
+        } else if (seleccion.equals(resources.getString("sports"))) {
             // Agregar nuevo Deporte
             try {
                 Window ventana = tablaVista.getScene().getWindow();
@@ -689,16 +691,16 @@ public class OlimpiadasControler {
                     System.out.println("error.img " + e.getMessage());
                 }
                 scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.sports") + " - " + resources.getString("app.name"));
+                stage.setTitle(resources.getString("sports"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarDeportes();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                alerta(resources.getString("message.window_open"));
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
             }
-        }else if (seleccion.equals("Participaciones")) {
+        }else if (seleccion.equals(resources.getString("participations"))) {
             // Agregar nuevo Deporte
             try {
                 Window ventana = tablaVista.getScene().getWindow();
@@ -718,23 +720,39 @@ public class OlimpiadasControler {
                     System.out.println("error.img " + e.getMessage());
                 }
                 scene.getStylesheets().add(getClass().getResource("/com/example/proyectodein/estilo/style.css").toExternalForm());
-                stage.setTitle(resources.getString("window.add") + " " + resources.getString("window.participation") + " - " + resources.getString("app.name"));
+                stage.setTitle(resources.getString("participations"));
                 stage.initOwner(ventana);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.showAndWait();
                 cargarParticipaciones();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
-                alerta(resources.getString("message.window_open"));
+                alerta(new ArrayList<>(Arrays.asList(resources.getString("message.window_open"))));
             }
         }
     }
-    public void alerta(String texto) {
-        Alert alerta = new Alert(Alert.AlertType.ERROR);
+    private void alerta(ArrayList<String> mensajes) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(resources.getString("advert"));
+        alert.setHeaderText(null);
+
+        StringBuilder contenido = new StringBuilder();
+        for (String mensaje : mensajes) {
+            contenido.append(mensaje).append("\n");
+        }
+
+        alert.setContentText(contenido.toString().trim());
+        alert.showAndWait();
+    }
+
+    public void confirmacion(String mensajes) {
+        String contenido = String.join("\n", mensajes);
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
-        alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("info"));
+        alerta.setContentText(contenido);
         alerta.showAndWait();
     }
+
 
 }

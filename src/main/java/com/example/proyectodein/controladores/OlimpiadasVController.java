@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -97,54 +98,72 @@ public class OlimpiadasVController implements Initializable {
             if (DaoOlimpiada.eliminar(olimpiada)) {
                 confirmacion(resources.getString("delete.olympics.success"));
             } else {
-                alerta(resources.getString("delete.olympics.fail"));
+                ArrayList<String> errores = new ArrayList<>();
+                errores.add(resources.getString("delete.olympics.fail"));
+                alerta(errores);
             }
         }
     }
 
     @FXML
     void guardar(ActionEvent event) {
+        ArrayList<String> errores = new ArrayList<>();
+
+        // Validación de los campos
         String error = validar();
         if (!error.isEmpty()) {
-            alerta(error);
+            errores.add(error);
+        }
+
+        // Si hay errores, mostrar alerta
+        if (!errores.isEmpty()) {
+            alerta(errores);  // Pasamos el ArrayList de errores
         } else {
             Olimpiada nuevo = new Olimpiada();
             nuevo.setNombre(txtNombre.getText());
-            if(DaoOlimpiada.getOlimpiada(nuevo.getNombre())==null){
-            nuevo.setAnio(Integer.parseInt(txtAnio.getText()));
-            if (rbInvierno.isSelected()) {
-                nuevo.setTemporada("Winter");
-            } else {
-                nuevo.setTemporada("Summer");
-            }
-            nuevo.setCiudad(txtCiudad.getText());
 
-            if (this.olimpiada == null) {
-                // Crear una nueva olimpiada
-                int id = DaoOlimpiada.insertar(nuevo);
-                if (id == -1) {
-                    alerta(resources.getString("save.fail"));
+            // Comprobamos si la olimpiada ya existe
+            if(DaoOlimpiada.getOlimpiada(nuevo.getNombre()) == null){
+                nuevo.setAnio(Integer.parseInt(txtAnio.getText()));
+                if (rbInvierno.isSelected()) {
+                    nuevo.setTemporada("Winter");
                 } else {
-                    confirmacion(resources.getString("save.olympics"));
-                    Stage stage = (Stage) txtNombre.getScene().getWindow();
-                    stage.close();
+                    nuevo.setTemporada("Summer");
+                }
+                nuevo.setCiudad(txtCiudad.getText());
+
+                // Crear o modificar la olimpiada
+                if (this.olimpiada == null) {
+                    int id = DaoOlimpiada.insertar(nuevo);
+                    if (id == -1) {
+                        errores.add(resources.getString("save.fail"));
+                    } else {
+                        confirmacion(resources.getString("save.olympics"));
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    }
+                } else {
+                    if (DaoOlimpiada.modificar(this.olimpiada, nuevo)) {
+                        confirmacion(resources.getString("update.olympics"));
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        errores.add(resources.getString("save.fail"));
+                    }
                 }
             } else {
-                // Editar una olimpiada existente
-                if (DaoOlimpiada.modificar(this.olimpiada, nuevo)) {
-                    confirmacion(resources.getString("update.olympics"));
-                    Stage stage = (Stage) txtNombre.getScene().getWindow();
-                    stage.close();
-                } else {
-                    alerta(resources.getString("save.fail"));
-                }
-            }}
-            else {
-                alerta(resources.getString("save.fail"));
+                // Si ya existe, mostramos el mensaje de duplicado
+                errores.add(resources.getString("duplicate.olympics"));
+            }
+
+            // Si hay errores de duplicado o de inserción, mostramos la alerta
+            if (!errores.isEmpty()) {
+                alerta(errores);
             }
         }
     }
 
+    // Método de validación de los campos
     public String validar() {
         String error = "";
         if (txtNombre.getText().isEmpty()) {
@@ -165,18 +184,25 @@ public class OlimpiadasVController implements Initializable {
         return error;
     }
 
-    public void alerta(String texto) {
+    // Método para mostrar alertas con múltiples errores
+    public void alerta(ArrayList<String> mensajes) {
+        StringBuilder texto = new StringBuilder();
+        for (String mensaje : mensajes) {
+            texto.append(mensaje).append("\n");
+        }
+
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
-        alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("info"));
+        alerta.setContentText(texto.toString());
         alerta.showAndWait();
     }
 
+    // Método para mostrar mensaje de confirmación
     public void confirmacion(String texto) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
-        alerta.setTitle("Info");
+        alerta.setTitle(resources.getString("info"));
         alerta.setContentText(texto);
         alerta.showAndWait();
     }

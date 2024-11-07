@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class EventoController implements Initializable {
@@ -51,6 +52,7 @@ public class EventoController implements Initializable {
             lstDeporte.getSelectionModel().select(evento.getIdDeporte());
         }
     }
+
     public void cargarListas() {
         ObservableList<Olimpiada> olimpiadas = DaoOlimpiada.cargarListado();
         lstOlimpiada.getItems().addAll(olimpiadas);
@@ -60,63 +62,81 @@ public class EventoController implements Initializable {
 
     @FXML
     void cancelar(ActionEvent event) {
-        Stage stage = (Stage)txtNombre.getScene().getWindow();
+        Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
 
     @FXML
     void guardar(ActionEvent event) {
-        String error = "";
+        ArrayList<String> errores = new ArrayList<>();
+
         if (txtNombre.getText().isEmpty()) {
-            error = resources.getString("validate.event.name") + "\n";
+            errores.add(resources.getString("validate.event.name"));
         }
         if (lstOlimpiada.getSelectionModel().getSelectedItem() == null) {
-            error += resources.getString("validate.event.olympic") + "\n";
+            errores.add(resources.getString("validate.event.olympic"));
         }
         if (lstDeporte.getSelectionModel().getSelectedItem() == null) {
-            error += resources.getString("validate.event.sport") + "\n";
+            errores.add(resources.getString("validate.event.sport"));
         }
-        if (!error.isEmpty()) {
-            alerta(error);
+
+        if (!errores.isEmpty()) {
+            alerta(errores);  // Pasamos el ArrayList de errores
         } else {
             Evento nuevo = new Evento();
             nuevo.setNombre(txtNombre.getText());
             nuevo.setIdOlimpiada(lstOlimpiada.getSelectionModel().getSelectedItem().getIdOlimpiada());
             nuevo.setIdDeporte(lstDeporte.getSelectionModel().getSelectedItem().getIdDeporte());
-            if(DaoEvento.getEvento(nuevo.getNombre(),nuevo.getIdOlimpiada(),nuevo.getIdDeporte())==null){
-            if (this.evento == null) {
-                int id = DaoEvento.insertar(nuevo);
-                if (id == -1) {
-                    alerta(resources.getString("save.fail"));
+
+            // Verificar si el evento ya existe en la base de datos
+            if (DaoEvento.getEvento(nuevo.getNombre(), nuevo.getIdOlimpiada(), nuevo.getIdDeporte()) == null) {
+                // Si no existe, insertar o modificar según sea necesario
+                if (this.evento == null) {
+                    int id = DaoEvento.insertar(nuevo);
+                    if (id == -1) {
+                        // Mostrar mensaje de error al guardar
+                        errores.add(resources.getString("save.fail"));
+                        alerta(errores);
+                    } else {
+                        confirmacion(resources.getString("save.events"));
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    }
                 } else {
-                    confirmacion(resources.getString("save.events"));
-                    Stage stage = (Stage)txtNombre.getScene().getWindow();
-                    stage.close();
+                    if (DaoEvento.modificar(evento, nuevo)) {
+                        confirmacion(resources.getString("update.events"));
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        // Si no se pudo modificar, mostrar mensaje de error
+                        errores.add(resources.getString("save.fail"));
+                        alerta(errores);
+                    }
                 }
             } else {
-                if (DaoEvento.modificar(evento, nuevo)) {
-                    confirmacion(resources.getString("update.events"));
-                    Stage stage = (Stage)txtNombre.getScene().getWindow();
-                    stage.close();
-                } else {
-                    alerta(resources.getString("save.fail"));
-                }
-            }}else {
-                alerta(resources.getString("save.fail"));
+                // Si el evento ya existe, mostrar mensaje de duplicado
+                errores.add(resources.getString("duplicate.event"));
+                alerta(errores);
             }
         }
     }
 
+    // Método para mostrar alerta con múltiples errores (ArrayList)
+    public void alerta(ArrayList<String> mensajes) {
+        // Unir los mensajes del ArrayList en un solo String para mostrarlos
+        StringBuilder texto = new StringBuilder();
+        for (String mensaje : mensajes) {
+            texto.append(mensaje).append("\n");
+        }
 
-    public void alerta(String texto) {
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
         alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setContentText(texto.toString());
         alerta.showAndWait();
     }
 
-
+    // Método para mostrar mensaje de confirmación
     public void confirmacion(String texto) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
@@ -124,5 +144,4 @@ public class EventoController implements Initializable {
         alerta.setContentText(texto);
         alerta.showAndWait();
     }
-
 }

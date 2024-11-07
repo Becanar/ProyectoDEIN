@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -74,11 +75,15 @@ public class DeportesController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             if (DaoDeporte.eliminar(deporte)) {
-                confirmacion(resources.getString("delete.sports.success"));
+                ArrayList<String> confirmMessages = new ArrayList<>();
+                confirmMessages.add(resources.getString("delete.sports.success"));
+                confirmacion(confirmMessages);
                 Stage stage = (Stage) txtNombre.getScene().getWindow();
                 stage.close();
             } else {
-                alerta(resources.getString("delete.sports.fail"));
+                ArrayList<String> failMessages = new ArrayList<>();
+                failMessages.add(resources.getString("delete.sports.fail"));
+                alerta(failMessages);
             }
         }
     }
@@ -87,53 +92,65 @@ public class DeportesController implements Initializable {
     void guardar(ActionEvent event) {
         // Validar el nombre del deporte antes de guardar
         if (txtNombre.getText().isEmpty()) {
-            alerta(resources.getString("validate.sports.name"));
+            ArrayList<String> failMessages = new ArrayList<>();
+            failMessages.add(resources.getString("validate.sports.name"));
+            alerta(failMessages);
         } else {
             // Crear un nuevo objeto deporte con los datos del formulario
             Deporte nuevo = new Deporte();
             nuevo.setNombre(txtNombre.getText());
-            System.out.println(DaoDeporte.getDeporte(nuevo.getNombre()));
-            if(DaoDeporte.getDeporte(nuevo.getNombre())==null){
-            if (this.deporte == null) {
-                // Si no estamos editando un deporte, lo creamos
-                int id = DaoDeporte.insertar(nuevo);
-                if (id == -1) {
-                    alerta(resources.getString("save.fail"));
+            if (DaoDeporte.getDeporte(nuevo.getNombre()) == null) {
+                if (this.deporte == null) {
+                    // Si no estamos editando un deporte, lo creamos
+                    int id = DaoDeporte.insertar(nuevo);
+                    if (id == -1) {
+                        ArrayList<String> failMessages = new ArrayList<>();
+                        failMessages.add(resources.getString("save.fail"));
+                        alerta(failMessages);
+                    } else {
+                        ArrayList<String> successMessages = new ArrayList<>();
+                        successMessages.add(resources.getString("save.sports"));
+                        confirmacion(successMessages);
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    }
                 } else {
-                    confirmacion(resources.getString("save.sports"));
-                    Stage stage = (Stage) txtNombre.getScene().getWindow();
-                    stage.close();
+                    // Si estamos editando un deporte, lo actualizamos
+                    if (DaoDeporte.modificar(this.deporte, nuevo)) {
+                        ArrayList<String> successMessages = new ArrayList<>();
+                        successMessages.add(resources.getString("update.sports"));
+                        confirmacion(successMessages);
+                        Stage stage = (Stage) txtNombre.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        ArrayList<String> failMessages = new ArrayList<>();
+                        failMessages.add(resources.getString("save.fail"));
+                        alerta(failMessages);
+                    }
                 }
             } else {
-                // Si estamos editando un deporte, lo actualizamos
-                if (DaoDeporte.modificar(this.deporte, nuevo)) {
-                    confirmacion(resources.getString("update.sports"));
-                    Stage stage = (Stage) txtNombre.getScene().getWindow();
-                    stage.close();
-                } else {
-                    alerta(resources.getString("save.fail"));
-                }
-            }}else{
-                alerta(resources.getString("save.fail"));
+                ArrayList<String> failMessages = new ArrayList<>();
+                failMessages.add(resources.getString("duplicate.sport"));
+                alerta(failMessages);
             }
         }
     }
 
-    public void alerta(String texto) {
-        // Mostrar un mensaje de error
+    public void alerta(ArrayList<String> textos) {
+        String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.ERROR);
         alerta.setHeaderText(null);
-        alerta.setTitle("Error");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("error.title"));
+        alerta.setContentText(contenido);
         alerta.showAndWait();
     }
 
-    public void confirmacion(String texto) {
-        // Mostrar un mensaje de confirmación
+    public void confirmacion(ArrayList<String> textos) {
+        String contenido = String.join("\n", textos);
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setHeaderText(null);
-        alerta.setTitle("Info");
-        alerta.setContentText(texto);
+        alerta.setTitle(resources.getString("info.title"));
+        alerta.setContentText(contenido);
         alerta.showAndWait();
     }
 }
